@@ -13,6 +13,8 @@ Simple demo app
 * deploys DNS entry with external-dns app
 * deploys LetsEncrypt cert with cert-manager and letsencrypt-prod issuer
 
+Change cluster name and app name in CHANGEME lines!
+
 Create:
 
 ```
