@@ -32,4 +32,25 @@ kubectl delete namespace demoapp
 Storage demo
 ------------
 
+
+Like Simple demo app
+
+* creates SATA pvc
+* mount pvc to pods
+
+Create:
+
+```
+kubectl create namespace demoapp
+kubectl apply -f demoapp_volume.yaml -n demoapp
+POD=$(kubectl  get pods -n demoapp  --no-headers | tail -1 | awk '{print $1}')
+kubectl cp README.md demoapp/$POD:/usr/share/nginx/html/
+curl https://<app_name>/README.md
+```
+
+Delete:
+
+```
+kubectl delete -f demoapp_volume.yaml -n demoapp
+kubectl delete namespace demoapp
 ```
