@@ -4,7 +4,7 @@ image: mtr.external.otc.telekomcloud.com/mcsps/mcsps-tools:latest
 before_script:
 - apk add openssh-client
 - eval $(ssh-agent -s)
-- mkdir -p .~/.ssh/
+- mkdir -p ~/.ssh/
 - ssh-keygen -F github.com >> ~/.ssh/known_hosts
 - test -n "$GITHUB_SSH_PRIVATE_KEY" && ssh-add <(echo "$GITHUB_SSH_PRIVATE_KEY")
 - export GIT_SSH_COMMAND="ssh -o ForwardAgent=yes"
