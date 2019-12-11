@@ -1,0 +1,30 @@
+image: mtr.external.otc.telekomcloud.com/mcsps/mcsps-tools:latest
+#
+#
+before_script:
+- eval $(ssh-agent -s)
+- ssh-keygen -F github.com >> ~/.ssh/known_hosts
+- test -n "$GITHUB_SSH_PRIVATE_KEY" && ssh-add <(echo "$GITHUB_SSH_PRIVATE_KEY")
+- export GIT_SSH_COMMAND="ssh -o ForwardAgent=yes"
+ 
+stages:
+- deliver-github
+
+deliver-github:
+  stage: deliver-github
+  tags:
+    - k8s-executor
+  script:
+  - git config add user.name=MCSPS Dol Sync
+  - git config add user.email=mcsps-dis@telekom.de
+  - git remote remove github || true
+  - git remote add github ssh://git@github.com/mcsps/use-cases
+  - git remote -v
+  - git fetch github
+  - git push github --force HEAD:master
+
+after_script:
+- export SSH_AGENT_PID
+- ssh-agent -k
+
+# vim: sts=2 sw=2 ts=2 et:
