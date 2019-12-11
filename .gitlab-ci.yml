@@ -10,7 +10,7 @@ before_script:
 - echo "IdentitiesOnly yes" >> ~/.ssh/config
 
 - eval $(ssh-agent -s)
-- test -n "$GITHUB_SSH_PRIVATE_KEY" && ssh-add <(echo "$GITHUB_SSH_PRIVATE_KEY")
+- echo "$GITHUB_SSH_PRIVATE_KEY" | ssh-add
 - export GIT_SSH_COMMAND="ssh -o ForwardAgent=yes"
  
 stages:
@@ -21,7 +21,7 @@ deliver-github:
   tags:
     - k8s-executor
   script:
-  - ssh-agent
+  - ssh-add -l
   - git config --global user.name "MCSPS Dol Sync"
   - git config --global user.email "mcsps-dis@telekom.de"
   - git remote remove github || true
