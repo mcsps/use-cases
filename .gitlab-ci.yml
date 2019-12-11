@@ -21,8 +21,8 @@ deliver-github:
   tags:
     - k8s-executor
   script:
-  - git config --add user.name=MCSPS Dol Sync
-  - git config --add user.email=mcsps-dis@telekom.de
+  - git config --global user.name=MCSPS Dol Sync
+  - git config --global user.email=mcsps-dis@telekom.de
   - git remote remove github || true
   - git remote add github ssh://git@github.com/mcsps/use-cases
   - git remote -v
