@@ -11,7 +11,6 @@ before_script:
 
 - eval $(ssh-agent -s)
 - echo $GITHUB_SSH_PRIVATE_KEY | ssh-add
-- export GIT_SSH_COMMAND="ssh -o ForwardAgent=yes"
  
 stages:
 - deliver-github
