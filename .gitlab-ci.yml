@@ -4,8 +4,12 @@ image: mtr.external.otc.telekomcloud.com/mcsps/mcsps-tools:latest
 before_script:
 - apk add openssh-client
 - mkdir -p ~/.ssh/
+- echo "Host *" > ~/.ssh/config
+- echo "UserKnownHostsFile /dev/null" >> ~/.ssh/config
+- echo "StrictHostKeyChecking no" >> ~/.ssh/config
+- echo "IdentitiesOnly yes" >> ~/.ssh/config
+
 - eval $(ssh-agent -s)
-- ssh-keygen -F github.com >> ~/.ssh/known_hosts
 - test -n "$GITHUB_SSH_PRIVATE_KEY" && ssh-add <(echo "$GITHUB_SSH_PRIVATE_KEY")
 - export GIT_SSH_COMMAND="ssh -o ForwardAgent=yes"
  
