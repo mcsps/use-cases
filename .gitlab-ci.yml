@@ -25,7 +25,7 @@ deliver-github:
   - git config --global user.name "MCSPS Dol Sync"
   - git config --global user.email "mcsps-dis@telekom.de"
   - git remote remove github || true
-  - git remote add github ssh://git@github.com:mcsps/use-cases.git
+  - git remote add github git@github.com:mcsps/use-cases.git
   - git remote -v
   - git fetch github
   - git push github --force HEAD:master
