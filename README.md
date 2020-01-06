@@ -19,13 +19,13 @@ Create:
 
 ```
 kubectl create namespace demoapp
-kubectl apply -n demoapp.yaml -n demoapp
+kubectl apply -f demoapp.yaml -n demoapp
 ```
 
 Destroy:
 
 ```
-kubectl delete -n demoapp.yaml -n demoapp
+kubectl delete -f demoapp.yaml -n demoapp
 kubectl delete namespace demoapp
 ```
 
