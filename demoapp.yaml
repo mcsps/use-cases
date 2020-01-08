@@ -65,12 +65,12 @@ metadata:
   name: demoapp-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
-    external-dns.alpha.kubernetes.io/target: mcsps-test-k8s-01.mcsps.telekomcloud.com
+    external-dns.alpha.kubernetes.io/target: # CHANGEME <cluster_name>.mcsps.telekomcloud.com
     nginx.ingress.kubernetes.io/rewrite-target: /
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   rules:
-  - host: mcsps-test-k8s-01.mcsps.telekomcloud.com
+  - host: # CHANGE <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique
     http:
       paths:
       - path: /
@@ -79,5 +79,5 @@ spec:
           servicePort: 80
   tls:
   - hosts:
-    -  mcsps-test-k8s-01.mcsps.telekomcloud.com
+    - # CHANGE <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique
     secretName: demoapp-tls-secret
