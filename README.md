@@ -47,16 +47,16 @@ Like Simple demo app
 Create:
 
 ```
-kubectl create namespace demoapp
-kubectl apply -f demoapp_volume.yaml -n demoapp
-POD=$(kubectl  get pods -n demoapp  --no-headers | tail -1 | awk '{print $1}')
-kubectl cp README.md demoapp/$POD:/usr/share/nginx/html/
+kubectl create namespace demoappvol
+kubectl apply -f demoapp_volume.yaml -n demoappvol
+POD=$(kubectl  get pods -n demoappvol  --no-headers | tail -1 | awk '{print $1}')
+kubectl cp README.md demoappvol/$POD:/usr/share/nginx/html/
 curl https://<app_name>/README.md
 ```
 
 Delete:
 
 ```
-kubectl delete -f demoapp_volume.yaml -n demoapp
-kubectl delete namespace demoapp
+kubectl delete -f demoapp_volume.yaml -n demoappvol
+kubectl delete namespace demoappvol
 ```
