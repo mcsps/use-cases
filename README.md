@@ -13,6 +13,12 @@ Simple demo app
 * deploys DNS entry with external-dns app
 * deploys LetsEncrypt cert with cert-manager and letsencrypt-prod issuer
 
+Requires
+--------
+
+* k8s 1.16
+
+
 Change cluster name and app name in CHANGEME lines!
 
 Create:

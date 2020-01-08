@@ -67,7 +67,7 @@ metadata:
     kubernetes.io/ingress.class: nginx
     external-dns.alpha.kubernetes.io/target: mcsps-test-k8s-01.mcsps.telekomcloud.com
     nginx.ingress.kubernetes.io/rewrite-target: /
-    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   rules:
   - host: mcsps-test-k8s-01.mcsps.telekomcloud.com
