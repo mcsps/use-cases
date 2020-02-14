@@ -40,6 +40,8 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/nginx/html
           name: demoapp-volume
+      nodeSelector:
+        role: worker
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       volumes:
