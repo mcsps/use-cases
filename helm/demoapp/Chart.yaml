@@ -3,3 +3,4 @@ name: demoapp
 description: MCSPS Demoapp
 version: 0.1.0
 appVersion: 0.1.0
+icon: https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/Kubernetes_logo_without_workmark.svg/1200px-Kubernetes_logo_without_workmark.svg.png
