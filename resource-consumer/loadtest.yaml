@@ -1,0 +1,43 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: loadtest-service
+  namespace: consumer
+spec:
+  selector:
+    app: loadtest
+  ports:
+    - port: 80
+      targetPort: 8080 
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: loadtest-deployment
+  namespace: consumer
+spec:
+  selector:
+    matchLabels:
+      app: loadtest
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: loadtest
+    spec:
+      containers:
+      - name: loadtest
+        image: gcr.io/kubernetes-e2e-test-images/resource-consumer:1.4
+        ports:
+        - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+---
