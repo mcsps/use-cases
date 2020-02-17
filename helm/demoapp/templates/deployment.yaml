@@ -1,0 +1,38 @@
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: demoapp-deployment
+spec:
+  selector:
+    matchLabels:
+      app: demoapp
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: demoapp
+    spec:
+      containers:
+      - name: demoapp
+        image: mtr.external.otc.telekomcloud.com/mcsps/nginx-non-root:master
+        ports:
+        - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          runAsNonRoot: true
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: demoapp-config
+      nodeSelector:
+        role: worker
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: demoapp-config
+          configMap:
+            name: demoapp-config

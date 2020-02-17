@@ -1,0 +1,2 @@
+clusterURL: "mcsps-test-k8s-01.mcsps.telekomcloud.com"
+appURL: "mcsps-test-k8s-01-demoapp-1.mcsps.telekomcloud.com"

@@ -1,0 +1,13 @@
+questions:
+  - variable: clusterURL
+    default: "<cluster-url>"
+    type: string
+    description: "Cluster URL"
+    required: true
+    label: Cluster URL
+  - variable: appURL
+    default: "<app-url>"
+    type: string
+    description: "App URL"
+    required: true
+    label: "App URL"

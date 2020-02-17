@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demoapp-config
+data:
+  index.html: |
+    <html>
+    <body>
+    <h1>Greetings from MCSPS</h1>
+    </body>
+    </html>

@@ -1,0 +1,19 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: demoapp-service
+spec:
+  selector:
+    app: demoapp
+  ports:
+    - port: 80
+      targetPort: 8080 # Default port of nginx imagekind: Service
+apiVersion: v1
+metadata:
+  name: demoapp-service
+spec:
+  selector:
+    app: demoapp
+  ports:
+    - port: 80
+      targetPort: 8080 # Default port of nginx image
