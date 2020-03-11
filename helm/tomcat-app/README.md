@@ -4,9 +4,10 @@
 
 - **Encrypt  secret file and source it**
 
+```
     $ export AES_KEY= see settings variables
-
-    $ openssl enc -d -aes256 -a -pass pass:$AES_KEY -in pullsecret.yaml.enc -out pullsecret.yaml;
+    $ openssl enc -d -aes256 -a -pass pass:$AES_KEY -in pullsecret.yaml.enc -out pullsecret.yaml
+```
     
 - **Create namespace**
 
