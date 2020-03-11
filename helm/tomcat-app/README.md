@@ -1,6 +1,4 @@
-**Rollout hello world java app within tomcat**
-
-- **Replace CHANGE entries in myvalues.yaml**
+# Rollout hello world java app within tomcat
 
 - **Encrypt  secret file and source it**
 
@@ -13,9 +11,20 @@
 
     $ kubectl create ns demo 
 
+- Provide image in mtr (example: java app). User with write access to the repo needed
+ 
+```
+    $ docker pull okteto/hello-world
+    $ docker tag 75a2276c0760 mtr.external.otc.telekomcloud.com/dis_usecases/hello-world:latest
+    $ dokcer login mtr.external.otc.telekomcloud.com
+    $ docker push mtr.external.otc.telekomcloud.com/dis_usecases/hello-world:latest
+```
+
 - **Create MTR image pull secret**
 
     $ kubectl create -f pullsecret.yaml
+
+- **Replace CHANGE entries in myvalues.yaml**
 
 - **Start the deployment**
 
