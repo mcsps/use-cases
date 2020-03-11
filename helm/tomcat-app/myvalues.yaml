@@ -1,5 +1,6 @@
 image:
-   repository: mtr.external.otc.telekomcloud.com/dis_usecases/hello-world
+   registry: mtr.external.otc.telekomcloud.com
+   repository: dis_usecases/hello-world
    tag: latest
    pullPolicy: Always
    pullSecrets: 
