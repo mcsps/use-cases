@@ -1,7 +1,6 @@
+**Rollout hello world java app within tomcat**
 
-h2. Rollout hello world java app within tomcat
-
-helm install my-tomcat-app --set image.repository=okteto/hello-world --set image.tag=java-maven --set image.pullPolicy=Always bitnami/tomcat --set persistence.storageClass=sata
+$ helm install my-tomcat-app --set image.repository=okteto/hello-world --set image.tag=java-maven --set image.pullPolicy=Always bitnami/tomcat --set persistence.storageClass=sata
 
 NAME: my-tomcat-app
 LAST DEPLOYED: Wed Mar 11 16:00:57 2020
