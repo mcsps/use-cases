@@ -20,6 +20,7 @@
 
 $ helm upgrade -n demo --values myvalues.yaml my-tomcat-app bitnami/tomcat -i
 
+```
 Release "my-tomcat-app" does not exist. Installing it now.
 coalesce.go:199: warning: destination for annotations is a table. Ignoring non-table value <nil>
 NAME: my-tomcat-app
@@ -42,3 +43,4 @@ echo "Tomcat URL: https://$HOSTNAME/"
   echo Password: $(kubectl get secret --namespace default my-tomcat-app -o jsonpath="{.data.tomcat-password}" | base64 --decode)
 
 
+```
