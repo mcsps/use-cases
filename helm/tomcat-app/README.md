@@ -1,7 +1,22 @@
 **Rollout hello world java app within tomcat**
 
-- Replace CHANGE entries in myvalues.yaml
-- Start the deployment
+- **Replace CHANGE entries in myvalues.yaml**
+
+- **Encrypt  secret file and source it**
+
+    $ export AES_KEY= see settings variables
+
+    $ openssl enc -d -aes256 -a -pass pass:$AES_KEY -in pullsecret.yaml.enc -out pullsecret.yaml;
+    
+- **Create namespace **
+
+    $ kubectl create ns demo 
+
+- **Create MTR image pull secret**
+
+    $ kubectl create -f pullsecret.yaml
+
+- **Start the deployment**
 
 $ helm upgrade --values myvalues.yaml my-tomcat-app bitnami/tomcat -i
 
