@@ -1,6 +1,7 @@
 **Rollout hello world java app within tomcat**
 
 - Replace CHANGE entries in myvalues.yaml
+- Start the deployment
 
 $ helm upgrade --values myvalues.yaml my-tomcat-app bitnami/tomcat -i
 
