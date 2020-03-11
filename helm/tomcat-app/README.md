@@ -34,13 +34,13 @@ NOTES:
 
 1. Get the Tomcat URL by running:
 
-export HOSTNAME=$(kubectl get ingress --namespace default my-tomcat-app -o jsonpath='{.spec.rules[0].host}')
+export HOSTNAME=$(kubectl get ingress --namespace demo my-tomcat-app -o jsonpath='{.spec.rules[0].host}')
 echo "Tomcat URL: https://$HOSTNAME/"
 
 2. Login with the following credentials
 
   echo Username: user
-  echo Password: $(kubectl get secret --namespace default my-tomcat-app -o jsonpath="{.data.tomcat-password}" | base64 --decode)
+  echo Password: $(kubectl get secret --namespace demo my-tomcat-app -o jsonpath="{.data.tomcat-password}" | base64 --decode)
 
 
 ```
