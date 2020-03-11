@@ -1,0 +1,30 @@
+image:
+   repository: okteto/hello-world
+   tag: java-maven
+   pullPolicy: Always
+
+persistence:
+   enabled: true
+   storageClass: sata
+   size: 8Gi
+
+service:
+   type: ClusterIP
+
+ingress:
+    enabled: true
+    certManager: false
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      external-dns.alpha.kubernetes.io/target: # CHANGEME <cluster_name>.mcsps.telekomcloud.com
+      inginx.ingress.kubernetes.io/rewrite-target: /
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+
+    hosts:
+    - name: # CHANGE <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique
+      path: /
+      tls: true
+      tlsSecret: tomcatapp-tls-secret
+
+nodeSelector:
+    role: worker
