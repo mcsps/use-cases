@@ -18,7 +18,7 @@
 
 - **Start the deployment**
 
-$ helm upgrade --values myvalues.yaml my-tomcat-app bitnami/tomcat -i
+$ helm upgrade -n demo --values myvalues.yaml my-tomcat-app bitnami/tomcat -i
 
 Release "my-tomcat-app" does not exist. Installing it now.
 coalesce.go:199: warning: destination for annotations is a table. Ignoring non-table value <nil>
