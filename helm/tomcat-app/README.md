@@ -8,7 +8,7 @@
 
     $ openssl enc -d -aes256 -a -pass pass:$AES_KEY -in pullsecret.yaml.enc -out pullsecret.yaml;
     
-- **Create namespace **
+- **Create namespace**
 
     $ kubectl create ns demo 
 
