@@ -24,7 +24,7 @@ Release "my-tomcat-app" does not exist. Installing it now.
 coalesce.go:199: warning: destination for annotations is a table. Ignoring non-table value <nil>
 NAME: my-tomcat-app
 LAST DEPLOYED: Wed Mar 11 17:11:32 2020
-NAMESPACE: default
+NAMESPACE: demo
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
