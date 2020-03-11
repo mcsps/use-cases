@@ -1,8 +1,10 @@
 image:
-   repository: okteto/hello-world
-   tag: java-maven
+   repository: mtr.external.otc.telekomcloud.com/dis_usecases/hello-world
+   tag: latest
    pullPolicy: Always
-
+   pullSecrets: 
+   - dis-usecases-dis-ops-pull-secret
+   
 persistence:
    enabled: true
    storageClass: sata
