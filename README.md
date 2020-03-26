@@ -62,6 +62,16 @@ kubectl delete namespace demoappvol
 ```
 
 
+OpenStack Cloud Controller
+---------------------------
+
+Create an external enhanced loadbalancer (ELB) with sticky session
+
+```
+kubectl create -f otc-lb.yaml
+```
+
+
 Cinder-CSI-Plugin
 -----------------
 
@@ -93,7 +103,19 @@ Create OTC Volume Snapshot:
 kubectl create -f cinder-csi-plugin/otc-volumesnapshot.yaml 
 ```
 
-Hello world tomcat web server as microservice
------------------
+Create OTC Volume Block-Device (with POD):
 
-see details in subfolder README.md
+```
+kubectl create -f cinder-csi-plugin/otc-blockdevice.yaml
+```
+
+Helm Deployment of Demo App
+----------------------------
+
+see [subfolder](helm/demoapp/)
+
+
+Hello world tomcat web server as microservice
+----------------------------------------------
+
+see [subfolder](helm/tomcat-app/README.md)
