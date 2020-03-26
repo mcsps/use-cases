@@ -93,3 +93,7 @@ Create OTC Volume Snapshot:
 kubectl create -f cinder-csi-plugin/otc-volumesnapshot.yaml 
 ```
 
+Hello world tomcat web server as microservice
+-----------------
+
+see details in subfolder README.md
