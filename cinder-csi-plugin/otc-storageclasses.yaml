@@ -4,6 +4,8 @@ kind: StorageClass
 metadata:
   name: sata
 provisioner: cinder.csi.openstack.org
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
 parameters:
   type: SATA
 ---
@@ -12,6 +14,8 @@ kind: StorageClass
 metadata:
   name: ssd
 provisioner: cinder.csi.openstack.org
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
 parameters:
   type: SSD
 ---
@@ -20,5 +24,7 @@ kind: StorageClass
 metadata:
   name: sas
 provisioner: cinder.csi.openstack.org
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
 parameters:
   type: SAS
