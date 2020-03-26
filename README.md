@@ -60,3 +60,36 @@ Delete:
 kubectl delete -f demoapp_volume.yaml -n demoappvol
 kubectl delete namespace demoappvol
 ```
+
+
+Cinder-CSI-Plugin
+-----------------
+
+
+The new storage solution after migration to External Cloud Provider
+
+Create OTC storage classes:
+
+```
+kubectl create -f cinder-csi-plugin/otc-storageclasses.yaml
+```
+
+Create OTC storage snapshot  class:
+
+```
+kubectl create -f cinder-csi-plugin/otc-volumesnapshotclass.yaml 
+```
+
+
+Create OTC storage (PVC):
+
+```
+kubectl create -f cinder-csi-plugin/otc-pvc.yaml 
+```
+
+Create OTC Volume Snapshot:
+
+```
+kubectl create -f cinder-csi-plugin/otc-volumesnapshot.yaml 
+```
+
