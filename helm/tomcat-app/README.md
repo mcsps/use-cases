@@ -1,4 +1,4 @@
-# Rollout hello world java app within tomcat
+# Rollout hello world tomcat web server as microservice
 
 - **Encrypt  secret file and source it**
 
