@@ -69,7 +69,7 @@ metadata:
     kubernetes.io/ingress.class: nginx
     external-dns.alpha.kubernetes.io/target: # CHANGEME <cluster_name>.mcsps.telekomcloud.com
     nginx.ingress.kubernetes.io/rewrite-target: /
-    ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/affinity: cookie
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   rules:
