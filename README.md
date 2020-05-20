@@ -35,6 +35,37 @@ kubectl delete -f demoapp.yaml -n demoapp
 kubectl delete namespace demoapp
 ```
 
+
+OAuth2 Keycloak Demo
+--------------------
+
+Provides a save https demo service behind Keycloak OAuth2 through oauth-proxy
+
+Howto: 
+
+* Create OpenID Client in Keycloak Realm
+* Authorization Enabled, set Valid Redirect URIs = <app-url>/*, pick up secret key
+* Setup a mapper "groups", Full group path = off, al other = on, Token Claim Name = groups
+* Adjust app name, cluster name, keycloak-server-name, oauth client id and secret in `oauth2-keycloak.yaml`
+  
+
+Create:
+
+```
+kubectl create namespace demoapp
+kubectl apply -f oauth2-keycloak.yaml -n demoapp
+```
+
+Destroy:
+
+```
+kubectl delete -f oauth2-keycloak.yaml -n demoapp
+kubectl delete namespace demoapp
+```
+
+Link: https://github.com/oauth2-proxy/oauth2-proxy
+
+
 Storage demo
 ------------
 

@@ -1,0 +1,161 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: demoapp-service
+spec:
+  selector:
+    app: demoapp
+  ports:
+    - port: 80
+      targetPort: 8080 # Default port of nginx image
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: demoapp-deployment
+spec:
+  selector:
+    matchLabels:
+      app: demoapp
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: demoapp
+    spec:
+      containers:
+      - name: demoapp
+        image: mtr.external.otc.telekomcloud.com/mcsps/nginx-non-root:master
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /index.html
+            port: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          runAsNonRoot: true
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: demoapp-config
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: demoapp-config
+          configMap:
+            name: demoapp-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demoapp-config
+data:
+  index.html: |
+    <html>
+    <body>
+    <h1>Greetings from MCSPS</h1>
+    </body>
+    </html>
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: demoapp-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    external-dns.alpha.kubernetes.io/target: # CHANGE ME <clustername>.mcsps.telekomcloud.com
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  rules:
+  - host: # change sub domain <demoapp> to something unique
+    http:
+      paths:
+      - backend:
+          serviceName: oauth2-proxy
+          servicePort: 4180
+        path: /oauth
+  tls:
+  - hosts:
+    -  # change sub domain <demoapp> to something unique
+    secretName: demoapp-tls-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    k8s-app: oauth2-proxy
+  name: oauth2-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: oauth2-proxy
+  template:
+    metadata:
+      labels:
+        k8s-app: oauth2-proxy
+    spec:
+      containers:
+      - args:
+        - --provider=keycloak
+        - --email-domain=*
+        - --upstream=file:///dev/null
+        - --http-address=0.0.0.0:4180
+        - --client-id=<keycloak-openid-clientid>
+        - --client-secret=<openid-secret>
+        - --login-url=https://<keycloak-server>/auth/realms/<realm>/protocol/openid-connect/auth
+        - --redeem-url=https://<keycloak-server>/auth/realms/<realm>/protocol/openid-connect/token
+        - --validate-url=https://<keycloak-server>/auth/realms/<realm>/protocol/openid-connect/userinfo
+        - --keycloak-group=<keycloak-user-group>
+        env:
+        - name: OAUTH2_PROXY_COOKIE_SECRET
+          value: SECRET
+        image: quay.io/pusher/oauth2_proxy:latest
+        imagePullPolicy: Always
+        name: oauth2-proxy
+        ports:
+        - containerPort: 4180
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: oauth2-proxy
+  name: oauth2-proxy
+spec:
+  ports:
+  - name: http
+    port: 4180
+    protocol: TCP
+    targetPort: 4180
+  selector:
+    k8s-app: oauth2-proxy
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: oauth2-proxy
+  annotations:
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$escaped_request_uri"
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: # change sub domain <demoapp> to something unique
+    http:
+      paths:
+      - backend:
+          serviceName: demoapp-service
+          servicePort: 80
+        path: /
+  tls:
+  - hosts:
+    - # change sub domain <demoapp> to something unique
+    secretName: demoapp-tls-secret
