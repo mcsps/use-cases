@@ -35,7 +35,7 @@ kubectl delete -f demoapp.yaml -n demoapp
 kubectl delete namespace demoapp
 ```
 
-Basix Auth Demo
+Basic Auth Demo
 ----------------
 
 Create or use htpasswd user to access security spaces in your app:
