@@ -35,6 +35,31 @@ kubectl delete -f demoapp.yaml -n demoapp
 kubectl delete namespace demoapp
 ```
 
+Basix Auth Demo
+----------------
+
+Create or use htpasswd user to access security spaces in your app:
+
+Create:
+
+```
+htpasswd -c auth foo
+kubectl create namespace demoapp
+kubectl create secret generic htaccess-secret --from-file=auth -n demoapp
+kubectl apply -f basicauth-demoapp.yaml -n demoapp
+```
+
+Destroy:
+
+```
+kubectl delete -f basicauth-demoapp.yaml -n demoapp
+kubectl delete secret htaccess-secret -n demoapp
+kubectl delete namespace demoapp
+```
+
+Reference: https://kubernetes.github.io/ingress-nginx/examples/auth/basic/
+
+
 
 Smartcard Auth Demo
 -------------------
