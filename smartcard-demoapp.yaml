@@ -1,0 +1,88 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: demoapp-service
+spec:
+  selector:
+    app: demoapp
+  ports:
+    - port: 80
+      targetPort: 8080 # Default port of nginx image
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: demoapp-deployment
+spec:
+  selector:
+    matchLabels:
+      app: demoapp
+  replicas: 2 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: demoapp
+    spec:
+      containers:
+      - name: demoapp
+        image: mtr.external.otc.telekomcloud.com/mcsps/nginx-non-root:master
+        ports:
+        - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          runAsNonRoot: true
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: demoapp-config
+      nodeSelector:
+        role: worker
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: demoapp-config
+          configMap:
+            name: demoapp-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demoapp-config
+data:
+  index.html: |
+    <html>
+    <body>
+    <h1>Greetings from MCSPS</h1>
+    </body>
+    </html>
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: demoapp-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    external-dns.alpha.kubernetes.io/target: # CHANGEME <cluster_name>.mcsps.telekomcloud.com
+    nginx.ingress.kubernetes.io/affinity: cookie
+    nginx.ingress.kubernetes.io/auth-tls-secret: demapp/ca-secret
+    nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
+    nginx.ingress.kubernetes.io/auth-tls-verify-depth: "2"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  rules:
+  - host: # CHANGE <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: demoapp-service
+          servicePort: 80
+  tls:
+  - hosts:
+    - # CHANGE <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique
+    secretName: demoapp-tls-secret

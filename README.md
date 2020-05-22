@@ -36,6 +36,39 @@ kubectl delete namespace demoapp
 ```
 
 
+Smartcard Auth Demo
+-------------------
+
+If your company/organization provide smartcards for the employees you can use
+[Ingress Client Auth](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/#client-certificate-authentication)
+to verify if the client is a member of your organization. Example for "Deutsche Telekom AG Issuing CA 02". Adapt create-smartcard-secret.sh if required.
+
+Create: 
+
+```
+kubectl create namespace demoapp
+./create-smartcard-secret.sh
+kubectl apply -f smartcard-demoapp.yaml -n demoapp
+```
+
+Destroy:
+
+```
+kubectl delete -f smartcard-demoapp.yaml -n demoapp
+kubectl delete namespace demoapp
+```
+
+Please note, there is user verification in the demoapp example. If this is required,
+you can use `nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "false"` to send cert to upstream service and make a selection
+of users. Or add a configuration-snippet to set additional header and proceed this also on upstream service:
+
+
+```
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($ssl_client_verify != SUCCESS) { return 403; }
+      proxy_set_header x-smardcard-auth "true";
+```
+
 OAuth2 Keycloak Demo
 --------------------
 
