@@ -69,7 +69,7 @@ metadata:
     kubernetes.io/ingress.class: nginx
     external-dns.alpha.kubernetes.io/target: # CHANGEME <cluster_name>.mcsps.telekomcloud.com
     nginx.ingress.kubernetes.io/affinity: cookie
-    nginx.ingress.kubernetes.io/auth-tls-secret: demapp/ca-secret
+    nginx.ingress.kubernetes.io/auth-tls-secret: dempapp/ca-secret
     nginx.ingress.kubernetes.io/auth-tls-verify-client: "on"
     nginx.ingress.kubernetes.io/auth-tls-verify-depth: "2"
     cert-manager.io/cluster-issuer: letsencrypt-prod
