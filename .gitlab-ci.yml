@@ -10,7 +10,15 @@ before_script:
 - echo "$GITHUB_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
  
 stages:
+- kubesec
 - deliver-github
+
+kubesec:
+  stage: kubesec
+  tags:
+    - k8s-executor
+  script:
+  - for i in `find . -name "*.yaml"`;do echo "=====$i====="; curl -sSX POST --data-binary @$i  https://kubesec.mcsps.telekomcloud.com/scan/;done
 
 deliver-github:
   stage: deliver-github
