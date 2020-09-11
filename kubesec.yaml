@@ -1,0 +1,70 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kubesec-service
+spec:
+  selector:
+    app: kubesec
+  ports:
+    - port: 80
+      targetPort: 8080 # Default port of nginx image
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: kubesec-deployment
+spec:
+  selector:
+    matchLabels:
+      app: kubesec
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: kubesec
+    spec:
+      containers:
+      - name: kubesec
+        image: docker.io/kubesec/kubesec:v2
+        command: ["./kubesec"]
+        args: ["http","8080"]
+        ports:
+        - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          runAsNonRoot: true
+          runAsUser: 1000
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      nodeSelector:
+        role: worker
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: kubesec-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    external-dns.alpha.kubernetes.io/target: # xxxx-k8s-01.mcsps.telekomcloud.com <- change cluster name
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/affinity: cookie
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  rules:
+  - host: kubesec.mcsps.telekomcloud.com # change sub domain <kubesec> to something unique
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: kubesec-service
+          servicePort: 80
+  tls:
+  - hosts:
+    - kubesec.mcsps.telekomcloud.com # change sub domain <kubesec> to something unique
+    secretName: kubesec-tls-secret

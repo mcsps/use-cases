@@ -208,3 +208,24 @@ Hello world tomcat web server as microservice
 ----------------------------------------------
 
 see [subfolder](helm/tomcat-app/README.md)
+
+Kubesec Pen Test
+----------------
+
+Test your deployment files agains K8s security advisories
+
+
+Create:
+
+adjust clustername and ingress name in kubesec.yaml
+
+```
+kubectl create namespace kubesec
+kubectl apply -f kubesec.yaml -n kubesec
+```
+
+Howto:
+
+```
+curl -sSX POST --data-binary @kubesec.yaml  https://kubesec.mcsps.telekomcloud.com/scan/
+```
