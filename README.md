@@ -209,6 +209,25 @@ Hello world tomcat web server as microservice
 
 see [subfolder](helm/tomcat-app/README.md)
 
+
+Hello world kustomization
+-------------------------
+
+see [kustomization.yaml](kustomization.yaml) and [helloworld folder](helloworld/)
+
+
+Create:
+
+```
+kubectl apply -k . -n helloworld
+```
+
+Delete:
+
+```
+kubectl delete -k . -n helloworld
+```
+
 Kubesec Pen Test
 ----------------
 

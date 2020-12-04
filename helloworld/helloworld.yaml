@@ -1,0 +1,196 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: helloworld-service
+spec:
+  selector:
+    app: helloworld
+  ports:
+    - port: 80
+      targetPort: 8080 # Default port of nginx image
+---
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+  name: helloworld-deployment
+spec:
+  selector:
+    matchLabels:
+      app: helloworld
+  replicas: 2 
+  template:
+    metadata:
+      labels:
+        app: helloworld
+    spec:
+      containers:
+      - name: helloworld
+        image: mtr.external.otc.telekomcloud.com/mcsps/nginx-non-root:master
+        ports:
+        - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          runAsNonRoot: true
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: helloworld-config
+      nodeSelector:
+        role: worker
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: helloworld-config
+          configMap:
+            name: helloworld-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: helloworld-config
+data:
+  index.html: |
+     <!DOCTYPE html>
+    <html>
+    <head>
+    <style>
+    body {
+      display: -webkit-flex;
+      color: #ea0a8e; /* magenta */
+    }
+    #main {
+      font-family: "Avenir Next", Helvetica;
+      border: 2px solid lightgrey;
+      border-radius: 10px;
+      margin: auto;
+      width: 700px;
+      height: 520px;
+      overflow: hidden;
+    }
+    
+    .hello,.world {
+      text-align: center;
+      margin: 10px auto -50px auto;
+      
+      text-transform: uppercase;
+      font-family: "Avenir Next", Helvetica;
+      font-weight: bold;
+      font-size: 6em;
+      letter-spacing: 4;    
+    }
+    .hello {
+      margin-top: 90px;
+    }
+    .world {
+      -webkit-transition-property: -webkit-transform, opacity;
+      -webkit-transition-timing-function: ease-out;
+      -webkit-transition-duration: 1s;
+    }
+    .world.offscreen {
+      -webkit-transform: translateY(280px) scaleY(2);
+      opacity: 0.5;
+    }
+    .letter {
+      display: inline-block;
+      -webkit-transition-property: -webkit-transform, opacity;
+      -webkit-transition-timing-function: ease-out;
+      -webkit-transition-duration: 1s;
+    }
+    .letter.offscreen {    
+      -webkit-transform: translateX(-720px) rotate(-360deg);
+      opacity: 0.5;
+    }
+    .offscreen {
+      -webkit-transition-property: none;
+    }
+    @media screen and (device-width:768px) {
+      #main {
+        width: 540px;
+      }
+    }
+    #title {
+      color: grey;
+      margin: 10px 0px 0px 12px;
+    }
+    </style>
+     <script>
+    function init() {
+      var letters = document.querySelectorAll('.hello>.letter');
+      var delay = 3;
+      var duration = 0.8;
+      for (var i=0; i<letters.length; i++) {
+        letters[i].style.webkitTransitionDelay = delay + "s";
+        letters[i].style.webkitTransitionDuration = duration + "s";
+        
+        delay-=0.5;
+        duration+=0.2;
+      }
+      startTransitions();
+    }
+    function startTransitions() {
+      var letters = document.querySelectorAll('.letter');
+      for (var i=0; i<letters.length; i++) {
+        letters[i].classList.remove('offscreen');
+      }
+    }
+    function resetTransitions() {
+      var letters = document.querySelectorAll('.letter');
+      for (var i=0; i<letters.length; i++) {
+        letters[i].classList.add('offscreen');
+      }
+      document.querySelector('.world').classList.add('offscreen');
+    }
+    
+    function checkLetter() {
+      var letter = event.target;
+      console.log(letter.innerText);
+      if (!letter.classList.contains('first')) return;
+      
+      document.querySelector('.world.offscreen').classList.remove('offscreen');
+    };
+    </script> 
+    </head>
+    
+    
+    <body onload="init();">
+      <div id="main">
+    
+          
+        <div class="hello" onwebkittransitionend="checkLetter();">
+          <span class="first letter offscreen">H</span><span class="letter offscreen">E</span><span class="letter offscreen">L</span><span class="letter offscreen">L</span><span class="letter offscreen">O</span>
+        </div>
+        
+        <div class="world offscreen">WORLD@DT</div>
+    	
+      </div> <!-- end main -->
+    </body>
+    </html>
+---
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: helloworld-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    external-dns.alpha.kubernetes.io/target: frank-test-k8s-04.mcsps.telekomcloud.com
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/affinity: cookie
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  rules:
+  - host: helloworlddt.mcsps.telekomcloud.com
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: helloworld-service
+          servicePort: 80
+  tls:
+  - hosts:
+    - helloworlddt.mcsps.telekomcloud.com
+    secretName: helloworlddt-mcsps-telekomcloud-com

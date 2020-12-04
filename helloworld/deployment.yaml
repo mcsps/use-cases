@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-deployment
+spec:
+  selector:
+    matchLabels:
+      app: helloworld
+  replicas: 2 
+  template:
+    metadata:
+      labels:
+        app: helloworld
+    spec:
+      containers:
+      - name: helloworld
+        image: mtr.external.otc.telekomcloud.com/mcsps/nginx-non-root:master
+        ports:
+        - containerPort: 8080
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          runAsNonRoot: true
+        stdin: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: helloworld-config
+      nodeSelector:
+        role: worker
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: helloworld-config
+          configMap:
+            name: helloworld-config

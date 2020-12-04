@@ -1,0 +1,23 @@
+# https://github.com/kubernetes/community/blob/master/contributors/devel/sig-api-machinery/strategic-merge-patch.md
+
+- op: add
+  path: /metadata/annotations
+  value: 
+    external-dns.alpha.kubernetes.io/target: frank-test-k8s-04.mcsps.telekomcloud.com
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/affinity: cookie
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+
+- op: replace
+  path: /spec/rules/0/host
+  value: helloworldfrank.mcsps.telekomcloud.com
+
+- op: replace
+  path: /spec/tls/0/secretName
+  value: helloworldfrank-mcsps-telekomcloud-com
+
+- op: replace
+  path: /spec/tls/0/hosts/0
+  value: helloworldfrank.mcsps.telekomcloud.com
+
