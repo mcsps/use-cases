@@ -248,3 +248,15 @@ Howto:
 ```
 curl -sSX POST --data-binary @kubesec.yaml  https://kubesec.mcsps.telekomcloud.com/scan/
 ```
+
+
+K8S Overlay Network Test
+------------------------
+
+Test connectivity between PODs in Overlay Network 
+(needs image root access, run in kube-system namespace)
+
+```
+kubectl apply -f overlaytest.yaml 
+sh overlaytest.sh
+```
