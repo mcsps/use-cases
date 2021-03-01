@@ -260,3 +260,22 @@ Test connectivity between PODs in Overlay Network
 kubectl apply -f overlaytest.yaml 
 sh overlaytest.sh
 ```
+
+MySQL Client
+------------
+
+Install a POD with mysql-client
+
+Create:
+
+```
+kubectl apply -f mysql-client.yaml 
+kubectl exec -it mysql-client-0 -- bash
+# apk add mysql-client
+```
+
+Delete:
+
+```
+kubectl delete -f mysql-client.yaml 
+```
