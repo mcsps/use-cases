@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    job-name: curl
+  name: curl
+spec:
+  backoffLimit: 1
+  completions: 10
+  parallelism: 10
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - image: gnuu/busybox
+        imagePullPolicy: IfNotPresent
+        name: curl
+        command: ["sh"]
+        args: ["-c","curl -v demoapp.demoapp/a && exit 0"]
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities: {}
+          privileged: false
+          runAsNonRoot: true
+          runAsUser: 1000

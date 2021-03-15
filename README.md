@@ -228,6 +228,28 @@ Delete:
 kubectl delete -k . -n helloworld
 ```
 
+
+Rancher Project Monitoring
+--------------------------
+
+Example how to install a new instance of Prometheus Operator in specific namespace (demoapp)
+
+Adjust namespace, app labels, ServiceMonitor, and alertmanager secret
+Refer to flask folder for a Python demo app to monitor
+
+Create:
+
+```
+kubectl apply -f monitoring
+```
+
+Delete:
+
+```
+kubectl delete -f monitoring
+```
+
+
 Kubesec Pen Test
 ----------------
 

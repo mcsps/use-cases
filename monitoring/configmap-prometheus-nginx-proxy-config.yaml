@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+data:
+  nginx.conf: "worker_processes      auto;\nerror_log             /dev/stdout warn;\npid                   /var/cache/nginx/nginx.pid;\n\nevents {\n   worker_connections 1024;\n}\n\nhttp {\n  include       /etc/nginx/mime.types;\n  log_format    main '[$time_local - $status] $remote_addr - $remote_user $request ($http_referer)';\n\n  proxy_connect_timeout       10;\n  proxy_read_timeout          180;\n  proxy_send_timeout          5;\n  proxy_buffering             off;\n  proxy_cache_path
+ /var/cache/nginx/cache levels=1:2 keys_zone=my_zone:100m inactive=1d max_size=10g;\n\n  server {\n    listen          8080;\n    access_log      off;\n\n    gzip            on;\n    gzip_min_length 1k;\n    gzip_comp_level 2;\n    gzip_types      text/plain application/javascript application/x-javascript text/css application/xml text/javascript image/jpeg image/gif image/png;\n    gzip_vary       on;\n    gzip_disable    \"MSIE [1-6]\\.\";\n\n    proxy_set_header Host $host;\n\n    location / {\n      proxy_cache         my_zone;\n      proxy_cache_valid   200 302 1d;\n      proxy_cache_valid   301 30d;\n      proxy_cache_valid   any 5m;\n      proxy_cache_bypass  $http_cache_control;\n      add_header          X-Proxy-Cache $upstream_cache_status;\n      add_header          Cache-Control \"public\";\n      \n      proxy_pass     http://localhost:9090/;\n\n      sub_filter_types text/html;\n      sub_filter_once off;\n      sub_filter          'var PATH_PREFIX = \"\";' 'var PATH_PREFIX = \".\";';\n\n      if ($request_filename ~ .*\\.(?:js|css|jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm)$) {\n        expires             90d;\n      }\n    }\n  }\n}"
+kind: ConfigMap
+metadata:
+  labels:
+    app: demoapp-monitoring-prometheus
+  name: prometheus-nginx-proxy-config
+  namespace: demoapp

@@ -1,0 +1,187 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/instance: demoapp-monitoring
+    app.kubernetes.io/name: grafana
+  name: demoapp-monitoring-grafana
+  namespace: demoapp
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: demoapp-monitoring
+      app.kubernetes.io/name: grafana
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: demoapp-monitoring
+        app.kubernetes.io/name: grafana
+    spec:
+      containers:
+      - env:
+        - name: METHOD
+        - name: LABEL
+          value: grafana_dashboard
+        - name: FOLDER
+          value: /tmp/dashboards
+        - name: RESOURCE
+          value: both
+        - name: NAMESPACE
+          value: demoapp
+        image: rancher/kiwigrid-k8s-sidecar:0.1.151
+        imagePullPolicy: IfNotPresent
+        name: grafana-sc-dashboard
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /tmp/dashboards
+          name: sc-dashboard-volume
+      - env:
+        - name: GF_SECURITY_ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              key: admin-user
+              name: demoapp-monitoring-grafana
+        - name: GF_SECURITY_ADMIN_PASSWORD
+        
+          valueFrom:
+            secretKeyRef:
+              key: admin-password
+              name: demoapp-monitoring-grafana
+        image: rancher/grafana-grafana:7.1.5
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /api/health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 30
+        name: grafana
+        ports:
+        - containerPort: 8080
+          name: nginx-http
+          protocol: TCP
+        - containerPort: 3000
+          name: grafana
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/health
+            port: 3000
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 200m
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/grafana/grafana.ini
+          name: config
+          subPath: grafana.ini
+        - mountPath: /var/lib/grafana
+          name: storage
+        - mountPath: /tmp/dashboards
+          name: sc-dashboard-volume
+        - mountPath: /etc/grafana/provisioning/dashboards/sc-dashboardproviders.yaml
+          name: sc-dashboard-provider
+          subPath: provider.yaml
+        - mountPath: /etc/grafana/provisioning/datasources
+          name: sc-datasources-volume
+      - args:
+        - nginx
+        - -g
+        - daemon off;
+        - -c
+        - /nginx/nginx.conf
+        image: rancher/library-nginx:1.19.2-alpine
+        imagePullPolicy: IfNotPresent
+        name: grafana-proxy
+        ports:
+        - containerPort: 8080
+          name: nginx-http
+          protocol: TCP
+        resources: {}
+        securityContext:
+          runAsGroup: 101
+          runAsUser: 101
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /nginx
+          name: grafana-nginx
+        - mountPath: /var/cache/nginx
+          name: nginx-home
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - env:
+        - name: METHOD
+          value: LIST
+        - name: LABEL
+          value: grafana_datasource
+        - name: FOLDER
+          value: /etc/grafana/provisioning/datasources
+        - name: RESOURCE
+          value: both
+        image: rancher/kiwigrid-k8s-sidecar:0.1.151
+        imagePullPolicy: IfNotPresent
+        name: grafana-sc-datasources
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /etc/grafana/provisioning/datasources
+          name: sc-datasources-volume
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 472
+        runAsGroup: 472
+        runAsNonRoot: true
+        runAsUser: 472
+      serviceAccount: demoapp-monitoring-grafana
+      serviceAccountName: demoapp-monitoring-grafana
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          defaultMode: 420
+          name: demoapp-monitoring-grafana
+        name: config
+      - emptyDir: {}
+        name: storage
+      - emptyDir: {}
+        name: sc-dashboard-volume
+      - configMap:
+          defaultMode: 420
+          name: demoapp-monitoring-grafana-config-dashboards
+        name: sc-dashboard-provider
+      - emptyDir: {}
+        name: sc-datasources-volume
+      - emptyDir: {}
+        name: nginx-home
+      - configMap:
+          defaultMode: 420
+          items:
+          - key: nginx.conf
+            mode: 438
+            path: nginx.conf
+          name: grafana-nginx-proxy-config
+        name: grafana-nginx

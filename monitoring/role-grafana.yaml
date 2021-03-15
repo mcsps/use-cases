@@ -1,0 +1,23 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/instance: demoapp-monitoring
+    app.kubernetes.io/name: grafana
+  name: demoapp-monitoring-grafana
+  namespace: demoapp
+rules:
+- apiGroups:
+  - extensions
+  resourceNames:
+  - rancher-monitoring-grafana
+  resources:
+  - podsecuritypolicies
+  verbs:
+  - use
+- apiGroups: [""]
+  resources:
+  - configmaps
+  - secrets
+  verbs: ["get","list","watch"]
