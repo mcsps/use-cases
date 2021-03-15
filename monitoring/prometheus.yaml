@@ -66,7 +66,9 @@ spec:
     runAsNonRoot: true
     runAsUser: 1000
   serviceAccountName: demoapp-monitoring-prometheus
-  serviceMonitorNamespaceSelector: {}
+  serviceMonitorNamespaceSelector:
+    matchLabels:
+      demoapp: monitor
   serviceMonitorSelector: {}
   version: v2.18.2
   volumes:
