@@ -57,7 +57,9 @@ spec:
   retention: 10d
   retentionSize: 50GiB
   routePrefix: /
-  ruleNamespaceSelector: {}
+  ruleNamespaceSelector:
+    matchLabels:
+      demoapp: monitor
   ruleSelector: {}
   scrapeInterval: 1m
   securityContext:
