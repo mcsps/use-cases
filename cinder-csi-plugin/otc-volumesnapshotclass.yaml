@@ -2,4 +2,6 @@ apiVersion: snapshot.storage.k8s.io/v1beta1
 kind: VolumeSnapshotClass
 metadata:
   name: csi-cinder-snapclass
+parameters:
+  force-create: "true"
 snapshotter: cinder.csi.openstack.org
