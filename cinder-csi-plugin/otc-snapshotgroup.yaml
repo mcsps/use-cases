@@ -1,0 +1,15 @@
+apiVersion: gemini.fairwinds.com/v1beta1
+kind: SnapshotGroup
+metadata:
+  name: csi-ssd-test
+spec:
+  persistentVolumeClaim:
+    claimName: csi-ssd-test
+  schedule:
+    - every: 5 minutes
+      keep: 3
+    - every: hour
+      keep: 1
+  template:
+    spec:
+      volumeSnapshotClassName: csi-cinder-snapclass
