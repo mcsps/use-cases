@@ -68,7 +68,7 @@ data:
     </body>
     </html>
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: demoapp-ingress
@@ -83,10 +83,13 @@ spec:
   - host: # CHANGE <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique
     http:
       paths:
-      - path: /
-        backend:
-          serviceName: demoapp-service
-          servicePort: 80
+      - backend:
+          service:
+            name: demoapp-service
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
   tls:
   - hosts:
     - # CHANGE <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique

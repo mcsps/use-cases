@@ -47,6 +47,15 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/nginx/html
           name: demoapp-volume
+      initContainers:
+      - name: install
+        imagePullPolicy: IfNotPresent
+        image: mtr.external.otc.telekomcloud.com/mcsps/nginx-non-root:master
+        command: ['sh', '-c']
+        args: ['echo "<html><body><h1>Greetings from MCSPS</h1></body></html>" > /usr/share/nginx/html/index.html']
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: demoapp-volume
       nodeSelector:
         role: worker
       restartPolicy: Always
@@ -72,7 +81,7 @@ spec:
   storageClassName: sata
   volumeMode: Filesystem
 ---
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: demoapp-ingress
@@ -86,11 +95,14 @@ spec:
   - host: # CHANGEME <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique
     http:
       paths:
-      - path: /
-        backend:
-          serviceName: demoapp-service
-          servicePort: 80
+      - backend:
+          service:
+            name: demoapp-service
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
   tls:
   - hosts:
-    -  # CHANGE <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique
+    -  # CHANGEME <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique
     secretName: demoapp-tls-secret

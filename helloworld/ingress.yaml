@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: helloworld-ingress
@@ -7,10 +7,13 @@ spec:
   - host: demoapp.mcsps.telekomcloud.com
     http:
       paths:
-      - path: /
-        backend:
-          serviceName: helloworld-service
-          servicePort: 80
+      - backend:
+          service:
+            name: helloworld-service
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific
   tls:
   - hosts:
     - demoapp.mcsps.telekomcloud.com
