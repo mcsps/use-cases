@@ -1,0 +1,26 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: helloworld
+spec:
+  gateways:
+  - helloworld-gateway
+  hosts:
+  - '*'
+  http:
+  - match:
+    - uri:
+        exact: /hello
+    route:
+    - destination:
+        host: helloworld
+        port:
+          number: 5000
+        subset: v1
+      weight: 10
+    - destination:
+        host: helloworld
+        port:
+          number: 5000
+        subset: v2
+      weight: 90
