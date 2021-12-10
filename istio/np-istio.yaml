@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: np-istio
+spec:
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          istio-injection: enabled
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          istio-injection: enabled
+  podSelector: {}
+  policyTypes:
+  - Egress
+  - Ingress
