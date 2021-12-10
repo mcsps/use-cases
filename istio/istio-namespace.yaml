@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    field.cattle.io/projectId: c-pzk8b:istio
+    field.cattle.io/resourceQuota: '{"limit":{"limitsCpu":"12000m","limitsMemory":"12000Mi"}}'
+    lifecycle.cattle.io/create.namespace-auth: "true"
+    scheduler.alpha.kubernetes.io/node-selector: role=ingress
+  labels:
+    field.cattle.io/projectId: istio
+    topology.istio.io/network: mcsps-test-01
+  name: istio-system

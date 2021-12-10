@@ -1,0 +1,16 @@
+apiVersion: install.istio.io/v1alpha1
+kind: IstioOperator
+metadata:
+  name: mcsps-test
+  namespace: istio-system
+spec:
+  tag: 1.12.0
+  profile: demo
+  hub: mtr.external.otc.telekomcloud.com/istio
+  values:
+    global:
+      meshID: mcsps-test
+      multiCluster:
+        clusterName: mcsps-test-k8s-02
+        enabled: true
+      network: mcsps-test-02

@@ -1,0 +1,22 @@
+apiVersion: management.cattle.io/v3
+kind: Project
+metadata:
+  name: istio
+spec:
+  clusterName: c-f7r9g
+  containerDefaultResourceLimit:
+    limitsCpu: 200m
+    limitsMemory: 128Mi
+    requestsCpu: 100m
+    requestsMemory: 64Mi
+  description: Istio Manage Project
+  displayName: istio
+  enableProjectMonitoring: false
+  namespaceDefaultResourceQuota:
+    limit:
+      limitsCpu: "12000m"
+      limitsMemory: "12000Mi"
+  resourceQuota:
+    limit:
+      limitsCpu: "12000m"
+      limitsMemory: "12000Mi"
