@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+  name: helloworld-ssl
+spec:
+  gateways:
+  - helloworld-ssl-gateway
+  hosts:
+  - '*'
+  http:
+  - match:
+    - uri:
+        exact: /hello
+    route:
+    - destination:
+        host: helloworld.sample.svc.cluster.local
+        port:
+          number: 5000
+        subset: v1
+      weight: 90
+    - destination:
+        host: helloworld.sample.svc.cluster.local
+        port:
+          number: 5000
+        subset: v2
+      weight: 10

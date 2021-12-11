@@ -28,6 +28,12 @@ spec:
     - port: 53
       protocol: TCP
   - ports:
+    - port: 443
+      protocol: TCP
+  - ports:
+    - port: 80
+      protocol: TCP
+  - ports:
     - port: 53
       protocol: UDP
   ingress:
@@ -45,6 +51,12 @@ spec:
       protocol: TCP
   - ports:
     - port: 15443
+      protocol: TCP
+  - ports:
+    - port: 443
+      protocol: TCP
+  - ports:
+    - port: 80
       protocol: TCP
   podSelector: {}
   policyTypes:

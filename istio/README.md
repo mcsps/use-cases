@@ -512,12 +512,18 @@ spec:
     - port: 6443
       protocol: TCP
   - ports:
+    - port: 80
+      protocol: TCP
+  - ports:
     - port: 53
       protocol: TCP
   - ports:
     - port: 53
       protocol: UDP
   ingress:
+  - ports:
+    - port: 80
+      protocol: TCP
   - ports:
     - port: 15010
       protocol: TCP
@@ -681,6 +687,194 @@ Hello version: v2, instance: helloworld-v2-5866f57dd6-8hgml
 Hello version: v2, instance: helloworld-v2-5866f57dd6-8hgml
 Hello version: v2, instance: helloworld-v2-5866f57dd6-8hgml
 ```
+
+## SSL Frontend with Let's Encrypt Certification
+
+Be more production-ready we want to use SSL termination on frontend,
+a self-managed Let's Encrypt certificate together with a common hostname.
+
+To start with the hostname issue we use already [External-DNS](https://github.com/kubernetes-sigs/external-dns)
+and need to extend source list where external-dns listen on annotations:
+
+```yaml
+  - args:
+    - --log-level=info
+    - --log-format=text
+    - --domain-filter=mcsps.telekomcloud.com
+    - --policy=sync
+    - --provider=designate
+    - --registry=txt
+    - --interval=1m
+    - --txt-owner-id=$(K8S_NAME)
+    - --txt-prefix=_$(K8S_NAME)_
+    - --source=service
+    - --source=ingress
+    - --source=istio-gateway
+```
+
+Furthermore there is an issue that cert-manager with Istio can't operate
+in the user namespace where the application lives (`sample`). 
+
+"The Certificate should be created in the same namespace as the istio-ingressgateway"
+
+Ref: https://istio.io/latest/docs/ops/integrations/certmanager/
+
+This might be the decision that the Cluster Admin is responsible for this
+task and not the user without permissions to the Istio project in Rancher.
+
+Create a Gateway for SSL termination
+
+```json
+cat <<EOF | kubectl -n istio-system apply -f -
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/target: 80.158.47.22
+  name: helloworld-ssl-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: helloistio-mcsps-telekomcloud-com
+    hosts:
+    - helloistio.mcsps.telekomcloud.com
+```
+
+The DNS target ist the ip-address of the IngressGateway
+hint: to communicate with external-dns webhook we need a
+NetworkPolicy Egress tcp/80 rule.
+
+Create the VirtualService for traffic routing to the helloworld app
+in the sample namespace:
+
+```json
+cat <<EOF | kubectl -n istio-system apply -f -
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  annotations:
+  name: helloworld-ssl
+spec:
+  gateways:
+  - helloworld-ssl-gateway
+  hosts:
+  - '*'
+  http:
+  - match:
+    - uri:
+        exact: /hello
+    route:
+    - destination:
+        host: helloworld.sample.svc.cluster.local
+        port:
+          number: 5000
+        subset: v1
+      weight: 90
+    - destination:
+        host: helloworld.sample.svc.cluster.local
+        port:
+          number: 5000
+        subset: v2
+      weight: 10
+
+```
+
+Create a certificate for helloworld:
+
+```json
+cat <<EOF | kubectl -n istio-system apply -f -
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: helloistio
+spec:
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt-wild
+  secretName: helloistio-mcsps-telekomcloud-com
+  commonName: helloistio.mcsps.telekomcloud.com
+  dnsNames:
+  - helloistio.mcsps.telekomcloud.com
+```
+
+There are the assumption we have a ClusterIssuer `letsencrypt-wild` with
+dns01-challenge and a Designate-managed domain because we use external-dns.
+
+```json
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-wild
+spec:
+  acme:
+    email: cloud-operations@telekom.de
+    preferredChain: ""
+    privateKeySecretRef:
+      name: letsencrypt-wild
+    server: https://acme-v02.api.letsencrypt.org/directory
+    solvers:
+    - dns01:
+        webhook:
+          groupName: acme.syseleven.de
+          solverName: designatedns
+```
+
+Let`s Encrypt http-01 challenge will not work out of the box with
+Istio because this challenge expects temporary Ingress defintions.
+
+You will see something like that on IngressGateway:
+
+```bash
+[2021-12-11T17:40:54.432Z] "GET /.well-known/acme-challenge/Q14PwTatb9y3RPS3o4jss2NQL5lioZTnevB4kI7lns44 HTTP/1.1" 404 NR route_not_found - "-" 0 0 0 - "10.42.7.0" "cert-manager/v1.5.3 (clean)" "4828cac7-ae2d-91e7-9699-a6c2e9a82321" "helloistio.mcsps.telekomcloud.com" "-" - - 10.42.6.79:8080 10.42.7.0:13840 - -
+```
+
+check if certificate is issued:
+
+```bash
+$ kubectl -n istio-system get certificate
+NAME         READY   SECRET                               AGE
+helloistio   True    helloistio-mcsps-telekomcloud-com   56m
+```
+
+check connectivity:
+
+```bash
+$ for i in {1..12}; do curl http://helloistio.mcsps.telekomcloud.com/hello;sleep 1;done
+Hello version: v1, instance: helloworld-v1-c6c4969d7-lfgw7
+Hello version: v1, instance: helloworld-v1-c6c4969d7-lfgw7
+Hello version: v1, instance: helloworld-v1-c6c4969d7-lfgw7
+Hello version: v1, instance: helloworld-v1-c6c4969d7-lfgw7
+Hello version: v2, instance: helloworld-v2-5866f57dd6-8hgml
+Hello version: v1, instance: helloworld-v1-c6c4969d7-lfgw7
+Hello version: v2, instance: helloworld-v2-5866f57dd6-8hgml
+Hello version: v1, instance: helloworld-v1-c6c4969d7-lfgw7
+Hello version: v1, instance: helloworld-v1-c6c4969d7-lfgw7
+Hello version: v1, instance: helloworld-v1-c6c4969d7-lfgw7
+Hello version: v1, instance: helloworld-v1-c6c4969d7-lfgw7
+Hello version: v1, instance: helloworld-v1-c6c4969d7-lfgw7
+```
+
+The same tasks would be done on the second cluster to get real
+autonomy. Unfortunatelly we can't set [multiple A records from different instances in external-dns](https://github.com/kubernetes-sigs/external-dns/issues/1441) yet.
+So we have to skip this automatic tasks and could set 2 A records
+manually:
+
+```bash
+$ host helloistio.mcsps.telekomcloud.com
+helloistio.mcsps.telekomcloud.com has address 80.158.54.11
+helloistio.mcsps.telekomcloud.com has address 80.158.59.119
+```
+
+The loop test above should work on both endpoints and should switch
+followed by name resolution.
 
 More examples are on the Istio Github Repo or Istio docs.
 

@@ -1,0 +1,19 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/target: 80.158.54.11
+  name: helloworld-ssl-gateway
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - port:
+      number: 443
+      name: https
+      protocol: HTTPS
+    tls:
+      mode: SIMPLE
+      credentialName: helloistio-mcsps-telekomcloud-com
+    hosts:
+    - helloistio.mcsps.telekomcloud.com
