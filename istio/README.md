@@ -5,14 +5,14 @@ locations. Istio is one of the Service Mesh which we want to discover and to sol
 problems like
 
 * cluster-redundancy (each Kubernetes cluster works independent from each other and
-serve cloud-native, business-critical applications
+serve cloud-native, business-critical applications)
 * geo-redundancy (don't spread one cluster in different locations, each one location
 per cluster)
 * traffic shifting (serve one version of an application to one specific part of your
 customer, based on a region or your test team)
 
 Hint: There are already technical solutions to solve the problems with Kubernetes tools
-and withou a Service Mesh, because you load a lots of technical dependencies.
+and without a Service Mesh, because you load a lots of technical dependencies.
 
 Let's start!
 
@@ -33,13 +33,13 @@ The cluster fullfil the [CIS Benchmark Check](https://rancher.com/docs/rancher/v
 * Istio images are mirrored to MTR. Check available versions on https://mtr.external.otc.telekomcloud.com/repository/istio/
 * Download kubectl (if required) and get kube-config from Rancher
 
-```
+```bash
 curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
 ```
 
 * Download and install istioctl:
 
-```
+```bash
 $ curl -L https://istio.io/downloadIstio | sh -
 ```
 
@@ -261,11 +261,11 @@ spec:
   hub: mtr.external.otc.telekomcloud.com/istio
   values:
     global:
-      meshID: frank-test
+      meshID: mcsps-test
       multiCluster:
-        clusterName: frank-test-k8s-01
+        clusterName: mcsps-test-k8s-01
         enabled: true
-      network: frank-test-01
+      network: mcsps-test-01
 EOF
 ```
 
@@ -290,12 +290,12 @@ spec:
         label:
           istio: eastwestgateway
           app: istio-eastwestgateway
-          topology.istio.io/network: frank-test-01
+          topology.istio.io/network: mcsps-test-01
         enabled: true
         k8s:
           env:
             - name: ISTIO_META_REQUESTED_NETWORK_VIEW
-              value: frank-test-01
+              value: mcsps-test-01
           service:
             ports:
               - name: status-port
@@ -315,7 +315,7 @@ spec:
       istio-ingressgateway:
         injectionTemplate: gateway
     global:
-      network: frank-test-01
+      network: mcsps-test-01
 EOF
 ```
 
@@ -481,7 +481,9 @@ spec:
   - Ingress
 EOF
 ```
+
 With this rule we allow explicit traffic from and to Istio service ports, Kube-API and kube-dns:
+
 
 ```yaml
 cat <<EOF | kubectl -n istio-system apply -f -
@@ -582,6 +584,7 @@ spec:
   - Ingress
 EOF
 ```
+
 ## Verifiy Installation (troubleshooting guide)
 
 verify eastwest traffic
@@ -638,6 +641,7 @@ spec:
 ```
 
 Now we can say, 90% of traffic served by one services, and 10% by the other:
+
 ```yaml
 cat <<EOF | kubectl -n sample apply -f -
 apiVersion: networking.istio.io/v1beta1
@@ -847,7 +851,7 @@ helloistio   True    helloistio-mcsps-telekomcloud-com   56m
 check connectivity:
 
 ```bash
-$ for i in {1..12}; do curl http://helloistio.mcsps.telekomcloud.com/hello;sleep 1;done
+$ for i in {1..12}; do curl https://helloistio.mcsps.telekomcloud.com/hello;sleep 1;done
 Hello version: v1, instance: helloworld-v1-c6c4969d7-lfgw7
 Hello version: v1, instance: helloworld-v1-c6c4969d7-lfgw7
 Hello version: v1, instance: helloworld-v1-c6c4969d7-lfgw7
