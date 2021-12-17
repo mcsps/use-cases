@@ -240,7 +240,7 @@ After that we have both application running with exposed internal services.
 With Rancher proxy it can be reached with
 
 [https://raseed-test.external.otc.telekomcloud.com/k8s/clusters/c-pzk8b/api/v1/namespaces/istio-system/services/http:tracing:16686/proxy/jaeger/](https://raseed-test.external.otc.telekomcloud.com/k8s/clusters/c-pzk8b/api/v1/namespaces/istio-system/services/http:tracing:16686/proxy/jaeger/) and
-[https://raseed-test.external.otc.telekomcloud.com/k8s/clusters/c-pzk8b/api/v1/namespaces/istio-system/services/http:kiali:20001/proxy/](https://raseed-test.external.otc.telekomcloud.com/k8s/clusters/c-pzk8b/api/v1/namespaces/istio-system/services/http:kiali:20001/proxy/) on bothe cluster.
+[https://raseed-test.external.otc.telekomcloud.com/k8s/clusters/c-pzk8b/api/v1/namespaces/istio-system/services/http:kiali:20001/proxy/](https://raseed-test.external.otc.telekomcloud.com/k8s/clusters/c-pzk8b/api/v1/namespaces/istio-system/services/http:kiali:20001/proxy/) on both cluster.
 
 Not very common. Rancher 2.6 provides NavLinks resources to extend the
 dashboard menu in the UI
@@ -249,24 +249,23 @@ dashboard menu in the UI
 kubectl apply -f https://raw.githubusercontent.com/mcsps/use-cases/master/istio/navlinks.yaml
 ```
 
-<img src="images/2021-12-15-4.png" width="900" height="450" />
-
+<img src="images/2021-12-15-7.png" width="1024" height="459" />
 
 UI views:
 
 Kiali verified your Istio installation, shows problems and errors. At the end traffic flows
 are shown in graphs, requests are listed in details.
 
-<img src="images/2021-12-15-1.png" width="900" height="450" />
-<img src="images/2021-12-15-2.png" width="900" height="450" />
-<img src="images/2021-12-15-3.png" width="900" height="450" />
+<img src="images/2021-12-15-1.png" width="1024" height="459" />
+<img src="images/2021-12-15-2.png" width="1024" height="459" />
+<img src="images/2021-12-15-3.png" width="1024" height="459" />
 
 Data are provided by Jaeger which logs requests and network traffic in detail,
 based on the source interface and the commands.
 
-<img src="images/2021-12-15-5.png" width="900" height="450" />
-<img src="images/2021-12-15-6.png" width="900" height="450" />
-<img src="images/2021-12-15-7.png" width="900" height="450" />
+<img src="images/2021-12-15-4.png" width="1024" height="459" />
+<img src="images/2021-12-15-5.png" width="1024" height="459" />
+<img src="images/2021-12-15-6.png" width="1024" height="459" />
 
 ## Prometheus
 
@@ -337,7 +336,7 @@ istio-component-monitor   3d11h
 
 ### Service Endpoints
 
-<img src="images/2021-12-15-8.png" width="900" height="450" />
+<img src="images/2021-12-15-8.png" width="1024" height="459" />
 
 ## Grafana
 
@@ -345,7 +344,7 @@ There are many Grafana dashboard available for Istion. Want to mention here
 the [Istio Control Plan Dashboard](https://grafana.com/grafana/dashboards/7645)
 which works out of the box. Easy to add as explained in [Rancher Docs](https://rancher.com/docs/rancher/v2.5/en/monitoring-alerting/guides/customize-grafana/):
 
-<img src="images/2021-12-15-9.png" width="900" height="450" />
+<img src="images/2021-12-15-9.png" width="1024" height="459" />
 
 
 Happy [Istio!](https://istio.io/)
