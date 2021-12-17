@@ -336,7 +336,7 @@ istio-component-monitor   3d11h
 
 ## Grafana
 
-There are many Grafana dashboard available for Istion. Want to mention here
+There are many Grafana dashboard available for Istio. Want to mention here
 the [Istio Control Plan Dashboard](https://grafana.com/grafana/dashboards/7645)
 which works out of the box. Easy to add as explained in [Rancher Docs](https://rancher.com/docs/rancher/v2.5/en/monitoring-alerting/guides/customize-grafana/):
 
