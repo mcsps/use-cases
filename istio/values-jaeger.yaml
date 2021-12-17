@@ -1,0 +1,38 @@
+provider: jaeger
+
+global:
+  cattle:
+    systemDefaultRegistry: "mtr.external.otc.telekomcloud.com"
+  defaultResources: {}
+  imagePullPolicy: IfNotPresent
+  defaultNodeSelector: {}
+  rbac:
+    pspEnabled: true
+
+jaeger:
+  contextPath: "/jaeger"
+  repository: rancher/mirrored-jaegertracing-all-in-one
+  tag: 1.20.0
+  # spanStorageType value can be "memory" and "badger" for all-in-one image
+  spanStorageType: badger
+  resources:
+    limits:
+      cpu: 512m
+      memory: 1024Mi
+    requests:
+      cpu: 10m
+      memory: 128Mi
+  persistentVolumeClaim: 
+    enabled: true
+    storage: 5Gi
+  storageClassName: "sata"
+  accessMode: ReadWriteOnce
+  memory:
+    max_traces: 50000
+zipkin:
+  queryPort: 9411
+service:
+  annotations: {}
+  name: http-query
+  type: ClusterIP
+  externalPort: 16686

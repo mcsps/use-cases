@@ -1,0 +1,45 @@
+
+global:
+  # Specify rancher clusterId of external tracing config
+  # https://github.com/istio/istio.io/issues/4146#issuecomment-493543032
+  cattle:
+    systemDefaultRegistry: "mtr.external.otc.telekomcloud.com"
+    clusterId: "c-pzk8b"
+  #  clusterId: "c-f7r9g"
+  rbac:
+    pspEnabled: true
+
+fullnameOverride: "kiali"
+
+istio_namespace: "istio-system" # default is where Kiali is installed
+
+auth:
+  strategy: anonymous
+deployment:
+  repository: istio/kiali
+  image_pull_policy: "IfNotPresent"
+  tag: v1.44
+  accessible_namespaces:
+  - "sample"
+  - "istio-system"
+  # - "**"
+  
+  ingress_enabled: false
+  node_selector: {}
+  resources:
+    limits:
+      cpu: 512m
+      memory: 1024Mi
+    requests:
+      cpu: 10m
+      memory: 128Mi
+
+external_services:
+  prometheus:
+    custom_metrics_url: "http://rancher-monitoring-prometheus.cattle-monitoring-system.svc:9090"
+    url: "http://rancher-monitoring-prometheus.cattle-monitoring-system.svc:9090"
+  tracing:
+    in_cluster_url: "http://tracing.istio-system.svc:16686/jaeger"
+  grafana:
+    in_cluster_url: "http://rancher-monitoring-grafana.cattle-monitoring-system.svc:80"
+    url: "http://rancher-monitoring-grafana.cattle-monitoring-system.svc:80"
