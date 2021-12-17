@@ -132,10 +132,6 @@ spec:
 EOF
 ```
 
-<img src="images/2021-12-15-1.png" width="900" height="450" />
-<img src="images/2021-12-15-2.png" width="900" height="450" />
-<img src="images/2021-12-15-3.png" width="900" height="450" />
-
 ## Jaeger
 
 [Jaeger](https://www.jaegertracing.io/) monitor and troubleshoot transaction in
