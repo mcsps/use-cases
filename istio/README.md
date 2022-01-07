@@ -146,6 +146,11 @@ EOF
 ```
 Create a namespace `sample` on both cluster in Cluster context:
 
+```bash
+$ kubectl create namespace sample
+$ kubectl label namespace sample  istio-injection=enabled --overwrite
+```
+
 ## Istio Operator installation
 
 ```
