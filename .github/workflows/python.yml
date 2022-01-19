@@ -26,5 +26,4 @@ jobs:
           context: flask
           dockerfile: Dockerfile
           push: true
-          repository: mcsps/mcsps-python
-          tags: latest
+          tags: mtr.external.otc.telekomcloud.com/mcsps/mcsps-python:latest

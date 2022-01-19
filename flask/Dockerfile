@@ -8,8 +8,8 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s
 COPY requirements.txt /tmp/requirements.txt
 
 RUN pip install -r /tmp/requirements.txt
-
 RUN useradd --create-home appuser
+
 WORKDIR /home/appuser
 USER appuser
 ENV PYTHONUNBUFFERED=0
