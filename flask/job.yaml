@@ -12,7 +12,7 @@ spec:
     spec:
       restartPolicy: Never
       containers:
-      - image: gnuu/busybox
+      - image: mtr.external.otc.telekomcloud.com/rancher/mirrored-curlimages-curl:7.77.0
         imagePullPolicy: IfNotPresent
         name: curl
         command: ["sh"]
@@ -23,3 +23,10 @@ spec:
           privileged: false
           runAsNonRoot: true
           runAsUser: 1000
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi
