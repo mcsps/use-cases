@@ -13,4 +13,3 @@ RUN useradd --create-home appuser
 WORKDIR /home/appuser
 USER appuser
 ENV PYTHONUNBUFFERED=0
-
