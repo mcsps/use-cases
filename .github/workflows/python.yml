@@ -1,0 +1,25 @@
+# https://github.com/marketplace/actions/build-and-push-docker-images
+on: 
+  push: 
+    paths: 
+    - 'flask/Dockerfile'
+    - 'flask/requirements.txt'
+name: Build & Push Dockerfile Python Flask
+jobs:
+  deploy:
+    name: Docker Build & Push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build and push image
+        uses: docker/build-push-action@v1
+        with:
+          context: flask
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          registry: mtr.external.otc.telekomcloud.com
+          dockerfile: Dockerfile
+          repository: mcsps/mcsps-python
+          tags: latest
