@@ -23,3 +23,5 @@ prometheus_client
 flask-prometheus
 prometheus_flask_exporter
 # extra mod
+regex==2021.4.4
+requests==2.25.1
