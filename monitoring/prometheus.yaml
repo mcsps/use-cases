@@ -22,10 +22,10 @@ spec:
     - daemon off;
     - -c
     - /nginx/nginx.conf
-    image: rancher/library-nginx:1.19.2-alpine
+    image: mtr.external.otc.telekomcloud.com/rancher/mirrored-library-nginx:1.19.2-alpine
     name: prometheus-proxy
     ports:
-    - containerPort: 8080
+    - containerPort: 8081
       name: nginx-http
       protocol: TCP
     securityContext:
