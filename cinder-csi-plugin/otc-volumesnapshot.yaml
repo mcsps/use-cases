@@ -1,8 +1,8 @@
-apiVersion: snapshot.storage.k8s.io/v1beta1
+apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshot
 metadata:
-  name: csi-ssd-test-snapshot
+  name: demo-app-snapshot
 spec:
   volumeSnapshotClassName: csi-cinder-snapclass
   source:
-    persistentVolumeClaimName: csi-ssd-test
+    persistentVolumeClaimName: demo-app
