@@ -7,7 +7,7 @@ itsdangerous==1.1.0
 Jinja2==2.11.3
 MarkupSafe==1.1.1
 mysqlclient==1.4.6
-waitress==1.4.4
+waitress==2.1.1
 Werkzeug==1.0.1
 # docker webhook api
 dockerhub-webhook
