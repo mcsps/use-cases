@@ -16,7 +16,7 @@ Simple demo app
 Requires
 --------
 
-* k8s 1.16
+* k8s 1.21
 
 
 Change cluster name and app name in CHANGEME lines!
@@ -301,6 +301,14 @@ Delete:
 ```
 kubectl delete -f mysql-client.yaml 
 ```
+
+Cosign Image Sign/Verify
+------------------------
+
+verify image signature within init container
+
+
+see [demo-cosign.yaml](demo-cosign.yaml)
 
 
 Istio Multi-Cluster Demo
