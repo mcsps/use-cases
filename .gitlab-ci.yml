@@ -1,4 +1,4 @@
-image: mtr.external.otc.telekomcloud.com/mcsps/mcsps-tools:latest
+image: mtr.devops.telekom.de/mcsps/mcsps-tools:latest
 #
 #
 before_script:
