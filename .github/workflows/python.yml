@@ -18,7 +18,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          registry: mtr.external.otc.telekomcloud.com
+          registry: mtr.devops.telekom.de
           dockerfile: Dockerfile
       - name: Build and push image
         uses: docker/build-push-action@v2
@@ -26,4 +26,4 @@ jobs:
           context: flask
           dockerfile: Dockerfile
           push: true
-          tags: mtr.external.otc.telekomcloud.com/mcsps/mcsps-python:latest
+          tags: mtr.devops.telekom.de/mcsps/mcsps-python:latest

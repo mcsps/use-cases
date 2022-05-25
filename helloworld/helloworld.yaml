@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
       - name: helloworld
-        image: mtr.external.otc.telekomcloud.com/mcsps/nginx-non-root:master
+        image: mtr.devops.telekom.de/mcsps/nginx-non-root:master
         ports:
         - containerPort: 8080
         securityContext:

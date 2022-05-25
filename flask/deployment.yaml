@@ -22,7 +22,7 @@ spec:
         app: demoapp
     spec:
       containers:
-      - image: mtr.external.otc.telekomcloud.com/mcsps/mcsps-python:latest
+      - image: mtr.devops.telekom.de/mcsps/mcsps-python:latest
         imagePullPolicy: IfNotPresent
         name: demoapp
         ports:

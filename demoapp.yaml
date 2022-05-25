@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
       - name: demoapp
-        image: mtr.external.otc.telekomcloud.com/mcsps/nginx-non-root:master
+        image: mtr.devops.telekom.de/mcsps/nginx-non-root:master
         ports:
         - containerPort: 8080
         resources:
@@ -80,7 +80,7 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   rules:
-  - host: # CHANGE <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique
+  - host: # CHANGEME <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique
     http:
       paths:
       - backend:
@@ -92,5 +92,5 @@ spec:
         pathType: ImplementationSpecific
   tls:
   - hosts:
-    - # CHANGE <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique
+    -  # CHANGEME <app_name>.mcsps.telekomcloud.com # change sub domain <demoapp> to something unique
     secretName: demoapp-tls-secret
