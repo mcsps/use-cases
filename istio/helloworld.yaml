@@ -33,7 +33,7 @@ spec:
     spec:
       containers:
       - name: helloworld
-        image: mtr.external.otc.telekomcloud.com/istio/examples-helloworld-v1
+        image: mtr.devops.telekom.de/istio/examples-helloworld-v1
         resources:
           requests:
             cpu: "100m"
@@ -62,7 +62,7 @@ spec:
     spec:
       containers:
       - name: helloworld
-        image: mtr.external.otc.telekomcloud.com/istio/examples-helloworld-v2
+        image: mtr.devops.telekom.de/istio/examples-helloworld-v2
         resources:
           requests:
             cpu: "100m"

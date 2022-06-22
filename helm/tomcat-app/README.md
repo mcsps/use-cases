@@ -15,9 +15,9 @@
  
 ```
     $ docker pull okteto/hello-world
-    $ docker tag 75a2276c0760 mtr.external.otc.telekomcloud.com/dis_usecases/hello-world:latest
-    $ dokcer login mtr.external.otc.telekomcloud.com
-    $ docker push mtr.external.otc.telekomcloud.com/dis_usecases/hello-world:latest
+    $ docker tag 75a2276c0760 mtr.devops.telekom.de/dis_usecases/hello-world:latest
+    $ docker login mtr.devops.telekom.de
+    $ docker push mtr.devops.telekom.de/dis_usecases/hello-world:latest
 ```
 
 - **Create MTR image pull secret**

@@ -30,7 +30,7 @@ The cluster fullfil the [CIS Benchmark Check](https://rancher.com/docs/rancher/v
 
 ## More Prerequisites
 
-* Istio images are mirrored to MTR. Check available versions on https://mtr.external.otc.telekomcloud.com/repository/istio/
+* Istio images are mirrored to MTR. Check available versions on https://mtr.devops.telekom.de/repository/istio/
 * Download kubectl (if required) and get kube-config from Rancher
 
 ```bash
@@ -154,7 +154,7 @@ $ kubectl label namespace sample  istio-injection=enabled --overwrite
 ## Istio Operator installation
 
 ```
-$ istioctl operator init --tag 1.12.0 --hub mtr.external.otc.telekomcloud.com/istio
+$ istioctl operator init --tag 1.12.0 --hub mtr.devops.telekom.de/istio
 ```
 
 This will install the Istio Operator in namespace `istio-operator`
@@ -263,7 +263,7 @@ metadata:
 spec:
   tag: 1.12.0
   profile: demo
-  hub: mtr.external.otc.telekomcloud.com/istio
+  hub: mtr.devops.telekom.de/istio
   values:
     global:
       meshID: mcsps-test
@@ -286,7 +286,7 @@ metadata:
   name: eastwest
 spec:
   tag: 1.12.0
-  hub: mtr.external.otc.telekomcloud.com/istio
+  hub: mtr.devops.telekom.de/istio
   revision: ""
   profile: empty
   components:

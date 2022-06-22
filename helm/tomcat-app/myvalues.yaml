@@ -1,5 +1,5 @@
 image:
-   registry: mtr.external.otc.telekomcloud.com
+   registry: mtr.devops.telekom.de
    repository: dis_usecases/hello-world
    tag: latest
    pullPolicy: Always

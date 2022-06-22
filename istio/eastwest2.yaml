@@ -5,7 +5,7 @@ metadata:
 spec:
   revision: ""
   tag: 1.12.0
-  hub: mtr.external.otc.telekomcloud.com/istio
+  hub: mtr.devops.telekom.de/istio
   profile: empty
   components:
     ingressGateways:

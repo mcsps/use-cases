@@ -21,7 +21,7 @@ global:
   # Specify rancher clusterId of external tracing config
   # https://github.com/istio/istio.io/issues/4146#issuecomment-493543032
   cattle:
-    systemDefaultRegistry: "mtr.external.otc.telekomcloud.com"
+    systemDefaultRegistry: "mtr.devops.telekom.de"
     clusterId: "c-pzk8b"
   rbac:
     pspEnabled: true
@@ -146,7 +146,7 @@ provider: jaeger
 
 global:
   cattle:
-    systemDefaultRegistry: "mtr.external.otc.telekomcloud.com"
+    systemDefaultRegistry: "mtr.devops.telekom.de"
   defaultResources: {}
   imagePullPolicy: IfNotPresent
   defaultNodeSelector: {}

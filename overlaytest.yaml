@@ -15,7 +15,7 @@ spec:
       tolerations:
       - operator: Exists
       containers:
-      - image: mtr.external.otc.telekomcloud.com/mcsps/swiss-army-knife:latest
+      - image: mtr.devops.telekom.de/mcsps/swiss-army-knife:latest
         imagePullPolicy: Always
         name: overlaytest
         command: ["sh", "-c", "tail -f /dev/null"]

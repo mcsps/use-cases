@@ -2,7 +2,7 @@ provider: jaeger
 
 global:
   cattle:
-    systemDefaultRegistry: "mtr.external.otc.telekomcloud.com"
+    systemDefaultRegistry: "mtr.devops.telekom.de"
   defaultResources: {}
   imagePullPolicy: IfNotPresent
   defaultNodeSelector: {}
