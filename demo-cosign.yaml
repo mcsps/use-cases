@@ -6,8 +6,12 @@
 #
 # kubectl create namespace demoapp
 # cosign login mtr.devops.telekom.de -u xxxx -p xxxxx
-# cosign generate-key-pair k8s://demoapp/cosign
-# cosign sign --key k8s://demoapp/cosign mtr.devops.telekom.de/mcsps/test1:master
+# cosign generate-key-pair k8s://demoapp/cosigndemo
+# cosign sign --key k8s://demoapp/cosigndemo mtr.devops.telekom.de/cosigndemo/nginx-non-root:latest
+# or create key offline and only store public key
+# cosign generate-key-pair
+# cosign sign --key cosign.key mtr.devops.telekom.de/cosigndemo/nginx-non-root:latest
+# kubectl -n demoapp create secret generic cosigndemp --from-file=cosign.pub=cosign.pub
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -31,7 +35,7 @@ spec:
         app: demoapp
     spec:
       containers:
-      - image: mtr.devops.telekom.de/mcsps/test1:master
+      - image: mtr.devops.telekom.de/cosigndemo/nginx-non-root:latest
         imagePullPolicy: Always
         name: demoapp
         ports:
@@ -56,16 +60,18 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/nginx/html
           name: demoapp-config
+      imagePullSecrets:
+        - name: cosigndemo-pull
       dnsPolicy: ClusterFirst
       initContainers:
       - args:
         - verify
         - --key
-        - k8s://demoapp/cosign
-        - mtr.devops.telekom.de/mcsps/test1:master
+        - k8s://demoapp/cosigndemo
+        - mtr.devops.telekom.de/cosigndemo/nginx-non-root:latest
         command:
         - cosign
-        image: mtr.devops.telekom.de/mcsps/cosign:v1.8.0
+        image: mtr.devops.telekom.de/cosigndemo/cosign:v1.8.0
         imagePullPolicy: Always
         name: sigcheck
         resources:
@@ -75,6 +81,10 @@ spec:
           requests:
             cpu: 10m
             memory: 64Mi
+        volumeMounts:
+        - name: cosigndemo-pull
+          readOnly: true
+          mountPath: /home/nonroot/.docker/
         stdin: true
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
@@ -91,6 +101,12 @@ spec:
           defaultMode: 420
           name: demoapp-config
         name: demoapp-config
+      - name: cosigndemo-pull
+        secret:
+          secretName: cosigndemo-pull
+          items:
+          - key: .dockerconfigjson
+            path: config.json
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -138,3 +154,19 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: demoapp
+---
+apiVersion: v1
+data:
+  cosign.pub: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFS1BhWUhnZEVEQ3ltcGx5emlIdkJ5UjNxRkhZdgppaWxlMCtFMEtzVzFqWkhJa1p4UWN3aGsySjNqSm5VdTdmcjcrd05DeENkVEdYQmhBSTJveE1LbWx3PT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
+kind: Secret
+metadata:
+  name: cosigndemo
+type: Opaque
+---
+apiVersion: v1
+data:
+  .dockerconfigjson: ewogICJhdXRocyI6IHsKICAgICJtdHIuZGV2b3BzLnRlbGVrb20uZGUiOiB7CiAgICAgICJhdXRoIjogIlkyOXphV2R1WkdWdGJ5dHdkV3hzT2psRFFrVmFWMGxYTUUxT05GVkhRa3hRV0ZKTFVGVkVORXRVUWtjNFZ6QkpUbG8xVFRCQldUWlhRMDlEU1RCR01qTlNOekpWVURoWVZWaFRURVZEUzBJPSIsCiAgICAgICJlbWFpbCI6ICIiCiAgICB9CiAgfQp9
+kind: Secret
+metadata:
+  name: cosigndemo-pull
+type: kubernetes.io/dockerconfigjson
