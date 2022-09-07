@@ -30,7 +30,7 @@ spec:
         app: mysql-client
     spec:
       containers:
-      - image: mtr.devops.telekom.de/mcsps/mysql-client:0.0.4
+      - image: mtr.devops.telekom.de/mcsps/mysql-client:0.0.5
         imagePullPolicy: Always
         command: ['sh', '-c']
         args: ["tail -f /dev/null"]
@@ -40,8 +40,8 @@ spec:
         terminationMessagePolicy: File
         resources:
           limits:
-            cpu: 100m
-            memory: 128Mi
+            cpu: 2000m
+            memory: 2048Mi
           requests:
             cpu: 100m
             memory: 128Mi
@@ -55,6 +55,8 @@ spec:
           runAsUser: 1000
           runAsGroup: 1000
         volumeMounts:
+        - name: tmp
+          mountPath: /tmp
         - name: workdir
           mountPath: /home/appuser
         - name: mysql
@@ -70,6 +72,9 @@ spec:
       terminationGracePeriodSeconds: 3
       serviceAccountName: mysql-client
       volumes:
+      - name: tmp
+        emptyDir:
+          medium: Memory
       - name: workdir
         emptyDir: {}
       - name: mysql

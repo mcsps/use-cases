@@ -18,7 +18,7 @@ spec:
         app: mysql-client
     spec:
       containers:
-      - image: mtr.devops.telekom.de/mcsps/mysql-client:0.0.4
+      - image: mtr.devops.telekom.de/mcsps/mysql-client:0.0.5
         imagePullPolicy: Always
         command: ['sh', '-c']
         args: ["tail -f /dev/null"]
@@ -45,6 +45,8 @@ spec:
         volumeMounts:
         - name: workdir
           mountPath: /home/appuser
+        - name: tmp
+          mountPath: /tmp
       dnsPolicy: ClusterFirst
       hostNetwork: false
       restartPolicy: Always
@@ -58,6 +60,9 @@ spec:
       volumes:
       - name: workdir
         emptyDir: {}
+      - name: tmp
+        emptyDir:
+          medium: Memory
 ---
 apiVersion: v1
 kind: ServiceAccount
