@@ -302,6 +302,9 @@ Delete:
 kubectl delete -f mysql-client.yaml 
 ```
 
+Use `mysql-client_volume.yaml` if you need to create and mount PVC
+
+
 Cosign Image Sign/Verify
 ------------------------
 
