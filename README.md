@@ -319,3 +319,11 @@ Istio Multi-Cluster Demo
 
 see [subfolder](istio/)
 
+
+Backup K8S resources with kube-backup
+-------------------------------------
+
+see [kube-backup.yaml](kube-backup.yaml)
+
+and https://github.com/mcsps/kube-backup
+

@@ -1,0 +1,100 @@
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: kube-backup
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    app: kube-backup
+  name: kube-backup
+rules:
+- apiGroups:
+  - "*"
+  resources:
+  - "*"
+  verbs:
+  - "*"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: kube-backup
+  name: kube-backup
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kube-backup
+subjects:
+  - kind: ServiceAccount
+    name: kube-backup
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: kube-state-backup
+  labels:
+    app: kube-backup
+spec:
+  schedule: "*/30 * * * *"
+  concurrencyPolicy: Replace
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: kube-backup
+          name: kube-backup
+        spec:
+          containers:
+          - image: mtr.devops.telekom.de/mcsps/kube-backup:latest
+            imagePullPolicy: Always
+            name: backup
+            resources:
+              limits:
+                cpu: 500m
+                memory: 500Mi
+              requests:
+                cpu: 100m
+                memory: 128Mi
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                - ALL
+              privileged: false
+              readOnlyRootFilesystem: true
+            env:
+            - name: GIT_REPO
+              value: "https://oauth:xxxx@gitlab.devops.telekom.de/xxxx/xxxx.git"
+            - name: RESOURCETYPES
+              value: "ingress deployment jobs cronjobs configmap svc rc ds roles rolebindings networkpolicy statefulset"
+            #- name: GLOBALRESOURCES
+            #  value: "sc"
+            - name: NAMESPACES
+              value: "xxxx"
+            - name: GIT_BRANCH
+              value: "main"
+            - name: GIT_EMAIL
+              value: "xxxx@telekom.de"
+            volumeMounts:
+            - mountPath: /backup/
+              name: cache
+          dnsPolicy: ClusterFirst
+          terminationGracePeriodSeconds: 30
+          securityContext:
+            fsGroup: 1000
+            supplementalGroups:
+            - 1000
+          serviceAccountName: kube-backup
+          volumes:
+          - name: cache
+            emptyDir: {}
+          restartPolicy: OnFailure
