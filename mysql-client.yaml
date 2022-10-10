@@ -18,7 +18,8 @@ spec:
         app: mysql-client
     spec:
       containers:
-      - image: mtr.devops.telekom.de/mcsps/mysql-client:0.0.5
+      #- image: mtr.devops.telekom.de/mcsps/mysql-client:0.0.5
+      - image: mtr.devops.telekom.de/mcsps/mcsps-tools:v0.6.1
         imagePullPolicy: Always
         command: ['sh', '-c']
         args: ["tail -f /dev/null"]
@@ -111,6 +112,12 @@ spec:
   - ports:
     - port: 443
       protocol: TCP
+  - ports:
+    - port: 53
+      protocol: TCP
+  - ports:
+    - port: 53
+      protocol: UDP
   podSelector:
     matchLabels:
       app: mysql-client
