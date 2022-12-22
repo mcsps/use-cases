@@ -1,0 +1,140 @@
+# Ingress configuration set by cluster-admin: allow-snippet-annotations: "true"
+# User space Ingress configuration:
+# annotation:
+#   nginx.ingress.kubernetes.io/configuration-snippet: |
+#     access_log syslog:server=rsyslog.customer1-lab.svc.cluster.local:1514,facility=local7,severity=info;
+---
+apiVersion: v1
+data:
+  imudp.conf: |
+    module(load="imudp")
+    input(type="imudp" port="1514")
+  stdout.conf: |
+    module(load="omstdout")
+    *.* :omstdout:
+kind: ConfigMap
+metadata:
+  labels:
+    app: rsyslog
+  name: rsyslog-d
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rsyslog
+spec:
+  ports:
+  - port: 1514
+    protocol: UDP
+    targetPort: 1514
+  selector:
+    app: rsyslog
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: rsyslog
+  name: rsyslog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rsyslog
+  serviceName: rsyslog
+  template:
+    metadata:
+      labels:
+        app: rsyslog
+    spec:
+      containers:
+      - image: dockerhub.devops.telekom.de/jumanjiman/rsyslog:latest
+        imagePullPolicy: Always
+        name: rsyslog
+        ports:
+        - containerPort: 1514
+          name: tcp
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 98Mi
+          requests:
+            cpu: 10m
+            memory: 11Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsGroup: 1000
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /var/run
+          name: workdir
+        - mountPath: /tmp
+          name: tmp
+        - mountPath: /etc/rsyslog.d
+          name: config-volume
+      securityContext:
+        fsGroup: 1000
+        supplementalGroups:
+        - 1000
+      volumes:
+      - emptyDir: {}
+        name: workdir
+      - emptyDir:
+          medium: Memory
+        name: tmp
+      - configMap:
+          defaultMode: 420
+          name: rsyslog-d
+        name: config-volume
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Output
+metadata:
+  name: customer1-ingress
+spec:
+  elasticsearch:
+    buffer:
+      flush_at_shutdown: true
+      flush_interval: 10s
+      flush_mode: interval
+    host: customer1.es.otc-ece.telekom.de
+    index_name: customer1-ingress
+    password:
+      valueFrom:
+        secretKeyRef:
+          key: password
+          name: customer1-eaas-secret
+    port: 443
+    scheme: https
+    ssl_verify: true
+    ssl_version: TLSv1_2
+    user: customer1_write
+---
+apiVersion: logging.banzaicloud.io/v1beta1
+kind: Flow
+metadata:
+  name: customer1-ingress
+spec:
+  filters:
+  - tag_normaliser: {}
+  globalOutputRefs: []
+  localOutputRefs:
+  - customer1-ingress
+  match:
+  - select:
+      labels:
+        app: rsyslog
+---
+apiVersion: v1
+data:
+  password: xxxxxxxxxx
+kind: Secret
+metadata:
+  name: customer1-eaas-secret
+type: Opaque

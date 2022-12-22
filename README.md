@@ -327,3 +327,7 @@ see [kube-backup.yaml](kube-backup.yaml)
 
 and https://github.com/mcsps/kube-backup
 
+Logging Ingress logs in User space and deliver to Elasticsearch
+---------------------------------------------------------------
+
+see [rsyslog-deploy.yaml](rsyslog-deploy.yaml)
