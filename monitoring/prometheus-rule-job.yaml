@@ -17,5 +17,5 @@ spec:
       expr: flask_http_request_total{status="404"} > 0
       for: 1m
       labels:
-        severity: warning
+        severity: critical
         app: demoapp
