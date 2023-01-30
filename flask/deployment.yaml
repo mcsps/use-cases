@@ -22,18 +22,18 @@ spec:
         app: demoapp
     spec:
       containers:
-      - image: mtr.devops.telekom.de/mcsps/mcsps-python:latest
-        imagePullPolicy: IfNotPresent
+      - image: mtr.devops.telekom.de/mcsps/python-flask:demo
+        imagePullPolicy: Always
         name: demoapp
         ports:
           - containerPort: 5000
-        command: ["sh","-c"]
-        args: ["git clone https://github.com/mcsps/apps && cd apps/flask && gunicorn --bind 0.0.0.0:5000 --access-logfile /dev/stdout wsgi:app"]
         env:
         - name: PYTHONUNBUFFERED
           value: "1"
-        - name: APP
-          value: "demo"
+        #- name: https_proxy
+        #  value: "http://10.105.124.65:8084"
+        #- name: APP
+        #  value: "demo"
         resources:
           requests:
             cpu: 10m
@@ -43,16 +43,53 @@ spec:
             memory: 128Mi
         securityContext:
           allowPrivilegeEscalation: false
-          capabilities: {}
+          capabilities:
+            drop:
+            - ALL
           privileged: false
-          runAsNonRoot: true
+          readOnlyRootFilesystem: true
           runAsUser: 1000
-        resources: {}
+          runAsGroup: 1000
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
-      securityContext: {}
-      terminationGracePeriodSeconds: 30
+      securityContext:
+        fsGroup: 1000
+        supplementalGroups:
+        - 1000
+      terminationGracePeriodSeconds: 3
+      volumes:
+      - name: tmp
+        emptyDir:
+          medium: Memory
 
+---
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  annotations:
+  name: np-proxy-outgoing
+spec:
+  egress:
+  - ports:
+    - port: 8084
+      protocol: TCP
+    to:
+    - ipBlock:
+        cidr: 10.105.124.65/32
+  podSelector: {}
+  policyTypes:
+  - Egress

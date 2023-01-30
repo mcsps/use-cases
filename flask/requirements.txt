@@ -1,16 +1,12 @@
-# flask & mysql & jinja templates
-click==7.1.2
-Flask==1.1.2
-Flask-MySQLdb==0.2.0
-gunicorn==20.0.4
-itsdangerous==1.1.0
-Jinja2==2.11.3
-MarkupSafe==1.1.1
-mysqlclient==1.4.6
-waitress==2.1.1
-Werkzeug==1.0.1
-# docker webhook api
-dockerhub-webhook
+# flask & prometheus & jinja templates
+click
+Flask
+gunicorn
+itsdangerous
+Jinja2
+MarkupSafe
+waitress
+Werkzeug
 # matrix webhook bot
 markdown
 matrix-nio
@@ -18,10 +14,9 @@ matrix-nio
 marshmallow
 # flask email
 flask_mail
-# monitoring prometheus
+# monitoring
 prometheus_client
 flask-prometheus
 prometheus_flask_exporter
-# extra mod
-regex==2021.4.4
-requests==2.25.1
+# curl
+pycurl

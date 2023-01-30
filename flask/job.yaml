@@ -16,7 +16,7 @@ spec:
         imagePullPolicy: IfNotPresent
         name: curl
         command: ["sh"]
-        args: ["-c","curl -v demoapp.demoapp/a && exit 0"]
+        args: ["-c","curl -v demoapp.demoapp/ax && exit 0"]
         securityContext:
           allowPrivilegeEscalation: false
           capabilities: {}
