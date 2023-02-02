@@ -26,7 +26,7 @@ spec:
         imagePullPolicy: Always
         name: demoapp
         ports:
-          - containerPort: 5000
+          - containerPort: 9091
         env:
         - name: PYTHONUNBUFFERED
           value: "1"
