@@ -53,10 +53,17 @@ spec:
           readOnlyRootFilesystem: true
           runAsUser: 1000
           runAsGroup: 1000
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
       securityContext:
         fsGroup: 1000
         supplementalGroups:
         - 1000
+      volumes:
+      - name: tmp
+        emptyDir:
+          medium: Memory
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -98,7 +105,14 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
           runAsUser: 1000
+        volumeMounts:
+        - name: tmp
+          mountPath: /tmp
       securityContext:
         fsGroup: 1000
         supplementalGroups:
         - 1000
+      volumes:
+      - name: tmp
+        emptyDir:
+          medium: Memory
