@@ -105,6 +105,7 @@ spec:
           privileged: false
           readOnlyRootFilesystem: true
           runAsUser: 1000
+          runAsGroup: 1000
         volumeMounts:
         - name: tmp
           mountPath: /tmp
