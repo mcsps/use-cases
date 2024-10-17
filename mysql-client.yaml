@@ -52,6 +52,7 @@ spec:
       schedulerName: default-scheduler
       securityContext:
         fsGroup: 1000
+        runAsNonRoot: true
         supplementalGroups:
         - 1000
       terminationGracePeriodSeconds: 3
