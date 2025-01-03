@@ -1,0 +1,129 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: k8s-client
+  name: k8s-client
+spec:
+  serviceName: k8s-client
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: k8s-client
+  template:
+    metadata:
+      labels:
+        app: k8s-client
+    spec:
+      containers:
+      - image: ghcr.io/mcsps/utils:1.0.2
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c']
+        args: ["tail -f /dev/null"]
+        livenessProbe:
+          exec:
+            command:
+            - ls
+            - /tmp
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        name: k8s-client
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1024Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+            - CAP_NET_RAW
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsUser: 1000
+          runAsGroup: 1000
+          seccompProfile:
+            type: RuntimeDefault
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - name: workdir
+          mountPath: /home/appuser
+        - name: tmp
+          mountPath: /tmp
+      dnsPolicy: ClusterFirst
+      hostNetwork: false
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        supplementalGroups:
+        - 1000
+        seccompProfile:
+          type: RuntimeDefault
+      terminationGracePeriodSeconds: 1
+      serviceAccountName: k8s-client
+      volumes:
+      - name: workdir
+        emptyDir:
+          sizeLimit: 1000Mi
+      - name: tmp
+        emptyDir:
+          medium: Memory
+          sizeLimit: 500Mi
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app: k8s-client
+  name: k8s-client
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  labels:
+    app: k8s-client
+  name: k8s-client
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app: k8s-client
+  name: k8s-client
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: k8s-client
+subjects:
+  - kind: ServiceAccount
+    name: k8s-client
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  annotations:
+  name: np-k8s-client
+spec:
+  egress:
+  - ports:
+    - port: 3306
+      protocol: TCP
+    - port: 443
+      protocol: TCP
+    - port: 53
+      protocol: TCP
+    - port: 53
+      protocol: UDP
+  podSelector:
+    matchLabels:
+      app: k8s-client
+  policyTypes:
+  - Egress

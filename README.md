@@ -305,6 +305,24 @@ kubectl delete -f mysql-client.yaml
 Use `mysql-client_volume.yaml` if you need to create and mount PVC
 
 
+K8S Client
+----------
+
+Install a POD with k8s-client
+
+Create:
+
+```
+kubectl apply -f k8s-client.yaml
+kubectl exec -it k8s-client-0 -- bash
+```
+
+Delete:
+
+```
+kubectl delete -f k8s-client.yaml
+```
+
 Cosign Image Sign/Verify
 ------------------------
 
