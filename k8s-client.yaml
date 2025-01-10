@@ -113,15 +113,7 @@ metadata:
   name: np-k8s-client
 spec:
   egress:
-  - ports:
-    - port: 3306
-      protocol: TCP
-    - port: 443
-      protocol: TCP
-    - port: 53
-      protocol: TCP
-    - port: 53
-      protocol: UDP
+  - {}
   podSelector:
     matchLabels:
       app: k8s-client
