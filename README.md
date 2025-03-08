@@ -323,6 +323,26 @@ Delete:
 kubectl delete -f k8s-client.yaml
 ```
 
+Go Client
+----------
+
+Install a POD with go-client
+
+Create:
+
+```
+kubectl apply -f go-client.yaml
+kubectl exec -it go-client-0 -- bash
+```
+
+Delete:
+
+```
+kubectl delete -f go-client.yaml
+```
+
+go-client contains a Golang Runtime environment. To use with a persistent volume for the workdir, or adjust for emptydir.
+
 Cosign Image Sign/Verify
 ------------------------
 
