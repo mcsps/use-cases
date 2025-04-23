@@ -46,7 +46,7 @@ spec:
         command:
         - sh
         - -c
-        image: mtr.devops.telekom.de/mcsps/golang:1.0.5
+        image: mtr.devops.telekom.de/mcsps/golang:1.0.7
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:

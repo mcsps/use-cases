@@ -18,7 +18,7 @@ spec:
         app: k8s-client
     spec:
       containers:
-      - image: ghcr.io/mcsps/utils:1.0.2
+      - image: ghcr.io/mcsps/utils:1.0.7
         imagePullPolicy: IfNotPresent
         command: ['sh', '-c']
         args: ["tail -f /dev/null"]
