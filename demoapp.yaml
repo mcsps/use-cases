@@ -47,14 +47,26 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/nginx/html
           name: demoapp-config
+        - name: tmp
+          mountPath: /tmp
+        - name: run
+          mountPath: /run
       nodeSelector:
         role: worker
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       volumes:
-        - name: demoapp-config
-          configMap:
-            name: demoapp-config
+      - name: demoapp-config
+        configMap:
+          name: demoapp-config
+      - name: run
+        emptyDir:
+          medium: Memory
+          sizeLimit: 500Mi
+      - name: tmp
+        emptyDir:
+          medium: Memory
+          sizeLimit: 500Mi
 ---
 apiVersion: v1
 kind: ConfigMap

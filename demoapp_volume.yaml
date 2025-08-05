@@ -56,14 +56,26 @@ spec:
         volumeMounts:
         - mountPath: /usr/share/nginx/html
           name: demoapp-volume
+        - name: tmp
+          mountPath: /tmp
+        - name: run
+          mountPath: /run
       nodeSelector:
         role: worker
       restartPolicy: Always
       terminationGracePeriodSeconds: 30
       volumes:
-        - name: demoapp-volume
-          persistentVolumeClaim:
-            claimName: demoapp-volume
+      - name: demoapp-volume
+        persistentVolumeClaim:
+          claimName: demoapp-volume
+      - name: run
+        emptyDir:
+          medium: Memory
+          sizeLimit: 500Mi
+      - name: tmp
+        emptyDir:
+          medium: Memory
+          sizeLimit: 500Mi
       securityContext:
         fsGroup: 0101
 ---
